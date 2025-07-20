@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-
+	
 	<Incoming>incoming</Incoming>
 	<Outgoing>outgoing</Outgoing>
 	<IrisClosed>CLOSED</IrisClosed>
 	<IrisOpen>OPEN</IrisOpen>
 	
-	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
+	<PocketMapNo>Pocket maps do not support establishing a wormhole connection.</PocketMapNo>
+  
 	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
 	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
 	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
@@ -36,6 +37,6 @@
 	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
+	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>
 	
 </LanguageData>

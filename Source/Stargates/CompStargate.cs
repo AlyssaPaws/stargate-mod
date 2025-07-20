@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using Vehicles;
 using Verse;
 using Verse.Sound;
 using UnityEngine;
@@ -255,8 +256,23 @@ namespace StargatesMod
             base.CompTick();
             if (TicksUntilOpen > 0)
             {
-                ticksUntilOpen--;
-                if (ticksUntilOpen == 0)
+                if (SettingsManager.GetSetting("ccyt.stargatesmod", "shortenGateDialSeq") == "False")
+                {
+                    if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
+                    {
+                        SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+                        _prevRingSoundStartTick = TicksUntilOpen;
+                    }
+
+                    if (TicksUntilOpen == _prevRingSoundStartTick - 240 && _chevronSoundCounter < 3)
+                    {
+                        DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{_chevronSoundCounter + 1}")
+                            .PlayOneShot(SoundInfo.InMap(parent));
+                        _chevronSoundCounter++;
+                    }
+                }
+                else if (TicksUntilOpen == 200)
+                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
 
                 TicksUntilOpen--;
                 if (TicksUntilOpen == 0)
@@ -311,6 +327,7 @@ namespace StargatesMod
                             sendBuffer[i].Kill();
                             this.sendBuffer.Remove(sendBuffer[i]);
                         }
+                        else _sendBuffer[i].Kill();
 
                         _sendBuffer.Remove(_sendBuffer[i]);
                     }
@@ -325,7 +342,21 @@ namespace StargatesMod
                     
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
+                }
+                else /*TODO Test with Vehicles?*/
+                {
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
+                        _recvBuffer[
+                                0] as Pawn is
+                            VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                    {
+                        VehiclePawn vP = _recvBuffer[0] as VehiclePawn;
+                        vP?.DestroyVehicleAndPawns();
                     }
+                    else _recvBuffer[0].Kill();
+
+                    _recvBuffer.Remove(_recvBuffer[0]);
+                    SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
                 }
                 if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
                 ticksSinceBufferUnloaded++;
