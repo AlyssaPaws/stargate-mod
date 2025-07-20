@@ -348,14 +348,12 @@ namespace StargatesMod
                 {
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
-                        if (ModsConfig.IsActive("smashphil.vehicleframework") &&
-                            _sendBuffer[
-                                    0] as Pawn is
-                                VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                        if (ModsConfig.IsActive("smashphil.vehicleframework") && _sendBuffer[0] as Pawn is VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
                         {
                             VehiclePawn vP = _sendBuffer[0] as VehiclePawn;
                             vP?.DestroyVehicleAndPawns();
                         }
+                        
                         else _sendBuffer[i].Kill();
 
                         _sendBuffer.Remove(_sendBuffer[i]);
@@ -368,17 +366,29 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
-                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
-                        _recvBuffer[
-                                0] as Pawn is
-                            VehiclePawn) /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") && _recvBuffer[0] as Pawn is VehiclePawn) /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
                         GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
                     else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
 
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
-                _recvBuffer.Remove(_recvBuffer[0]);
+                else /*TODO Test with Vehicles?*/
+                {
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
+                        _recvBuffer[
+                                0] as Pawn is
+                            VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                    {
+                        VehiclePawn vP = _recvBuffer[0] as VehiclePawn;
+                        vP?.DestroyVehicleAndPawns();
+                    }
+                    else _recvBuffer[0].Kill();
+
+                    _recvBuffer.Remove(_recvBuffer[0]);
+                    SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
+                }
+
             }
 
             if (_connectedAddress == -1 && !_recvBuffer.Any()) CloseStargate(false);
