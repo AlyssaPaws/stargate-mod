@@ -59,6 +59,7 @@
 				<useJob>StargateMod_InstallIris</useJob>
 				<useLabel>Install iris</useLabel>
 				<useDuration>5000</useDuration>
+				<showUseGizmo>true</showUseGizmo> <!-- TODO Test ?-->
 			</li>
 		
 			<li Class="CompProperties_Targetable">

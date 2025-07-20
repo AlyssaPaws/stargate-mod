@@ -59,4 +59,84 @@
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 	</ThingDef>
 
+  <!-- =====	Dialling Computer	===== -->
+  <ThingDef ParentName="StargateMod_DHDBase">
+    <defName>StargateMod_DiallingComputer</defName>
+    <label>dialling computer</label>
+    <description>An advanced computer built to interface with a stargate. Unlike the DHD, this device was not designed by the original builders of the stargates. \n\n (Note: Can be placed with a wall in between it and the stargate, for that nice, secure Gateroom design.</description>
+    <graphicData>
+      <texPath>Things/Building/Misc/CommsConsole_south</texPath> <!--TODO Custom Textures-->
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(5,4)</drawSize>
+    </graphicData>
+    <designationCategory>Misc</designationCategory>
+    <costList>
+      <Steel>175</Steel>
+      <ComponentIndustrial>25</ComponentIndustrial>
+      <ComponentSpacer>8</ComponentSpacer>
+      <Gold>50</Gold>
+    </costList>
+    <statBases>
+      <MaxHitPoints>6000</MaxHitPoints>
+      <Flammability>0</Flammability>
+      <Mass>60</Mass>
+    </statBases>
+    <size>(3,1)</size>
+    <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+    <comps Inherit="False">
+      <li Class="CompProperties_Facility">
+        <maxDistance>15</maxDistance>
+        <requiresLOS>false</requiresLOS>
+      </li>
+      <li Class="StargatesMod.CompProperties_DialHomeDevice">
+        <requiresPower>True</requiresPower>
+      </li>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>550</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+    </comps>
+	  <researchPrerequisites>
+		  <li>StargateMod_AdvancedStargateMakingResearch</li>
+	  </researchPrerequisites>
+  </ThingDef>
+
+<!-- =====	DHD Broken	===== -->
+  <ThingDef ParentName="BuildingBase">
+    <defName>StargateMod_DialHomeDevice_Broken</defName>
+    <label>dial home device</label>
+    <description>An ancient device used to control a stargate.\n\n\nThis particular unit appears to have sustained some form of damage that has rendered it unusable.</description>
+    <graphicData>
+      <texPath>Things/Building/Stargate/dhd_broken</texPath>
+      <graphicClass>Graphic_Random</graphicClass>
+      <drawSize>(2,2)</drawSize>
+    </graphicData>
+    <rotatable>false</rotatable>
+    <stealable>false</stealable>
+    <passability>Impassable</passability>
+    <constructEffect>ConstructMetal</constructEffect>
+    <uiIconScale>0.65</uiIconScale>
+    <fillPercent>0.40</fillPercent>
+    <canOverlapZones>true</canOverlapZones>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+    <costList>
+      <Steel>140</Steel>
+      <ComponentIndustrial>8</ComponentIndustrial>
+      <ComponentSpacer>2</ComponentSpacer>
+      <Gold>25</Gold>
+    </costList>
+    <tickerType>Never</tickerType>
+    <building>
+      <ai_neverTrashThis>true</ai_neverTrashThis>
+    </building>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <Flammability>0</Flammability>
+      <Mass>45</Mass>
+    </statBases>
+    <size>(1,1)</size>
+    <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+  </ThingDef>
 </Defs>
