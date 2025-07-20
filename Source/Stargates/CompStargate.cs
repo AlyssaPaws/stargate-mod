@@ -348,9 +348,13 @@ namespace StargatesMod
                 {
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
+                        if (ModsConfig.IsActive("smashphil.vehicleframework") &&
+                            _sendBuffer[
+                                    0] as Pawn is
+                                VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
                         {
-                            sendBuffer[i].Kill();
-                            this.sendBuffer.Remove(sendBuffer[i]);
+                            VehiclePawn vP = _sendBuffer[0] as VehiclePawn;
+                            vP?.DestroyVehicleAndPawns();
                         }
                         else _sendBuffer[i].Kill();
 
@@ -364,7 +368,13 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
-                    
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
+                        _recvBuffer[
+                                0] as Pawn is
+                            VehiclePawn) /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                        GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
+                    else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
