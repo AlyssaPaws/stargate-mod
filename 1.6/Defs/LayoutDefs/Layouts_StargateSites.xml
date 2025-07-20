@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <StructureLayoutDef ParentName="OrbitalAncientPlatformBase" Name="AbandonedPlatformBase">
+    <defName>StargateMod_OrbitalStargatePlatform</defName>
+    <corridorDef>AncientOrbirtalCorridorDefense</corridorDef>
+    <wallAttachments>
+      <LifeSupportUnit>
+        <countRange>1~1</countRange>
+      </LifeSupportUnit>
+    </wallAttachments>
+    <roomDefs>
+      <StargateMod_GateRoom>
+        <countRange>1~1</countRange>
+      </StargateMod_GateRoom>
+      
+      <!-- Special -->
+      <AncientCryptosleepRoom_Hostile>
+        <countRange>1~2</countRange>
+      </AncientCryptosleepRoom_Hostile>
+      <RecRoom>
+        <countRange>1~1</countRange>
+      </RecRoom>
+      <OrbitalNursery MayRequire="Ludeon.RimWorld.Biotech">
+        <countRange>1~1</countRange>
+      </OrbitalNursery>
+      <OrbitalStoreroom_Loot>
+        <countRange>1~1</countRange>
+      </OrbitalStoreroom_Loot>
+
+      <!-- Decorative -->
+      <OrbitalTransportRoom>1</OrbitalTransportRoom>
+      <OrbitalHydroponics>1</OrbitalHydroponics>
+      <OrbitalDiningRoom>1</OrbitalDiningRoom>
+      <OrbitalBarracks>1</OrbitalBarracks>
+      <NarrowHalls>1</NarrowHalls>
+
+      <!-- Threats -->
+      <OrbitalStoreroom>2</OrbitalStoreroom>
+      <OrbitalComputerRoom>1</OrbitalComputerRoom>
+      <OrbitalStoreroom_GravshipUpgrade>0.1</OrbitalStoreroom_GravshipUpgrade>
+
+    </roomDefs>
+    <parts>
+      <Breached>0.25</Breached>
+      <Gore>0.25</Gore>
+    </parts>
+  </StructureLayoutDef>
+
+</Defs>

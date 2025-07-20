@@ -20,6 +20,7 @@
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
 	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
 	
+	<GateHibernating>Address conflict: Gate in hibernation mode.</GateHibernating>
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
