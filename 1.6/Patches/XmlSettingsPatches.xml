@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch> <!-- 
+  <Operation Class="XmlExtensions.OptionalPatch">
+    <modId>ccyt.stargatesmod</modId>
+    <key></key>
+    <defaultValue>false</defaultValue>
+    <caseTrue>
+      <Operation Class="PatchOperationRemove">
+        <xpath>/Defs/ThingDef[defName=""]</xpath>
+      </Operation>
+    </caseTrue>
+  </Operation> -->
+  
+    
+    <!-- Dev Tool -->
+    <Operation Class="XmlExtensions.OptionalPatch">
+        <modId>ccyt.stargatesmod</modId>
+        <key>SGDev</key>
+        <defaultValue>false</defaultValue>
+        <caseTrue>
+            <Operation Class="PatchOperationAdd">
+                <xpath>/Defs/ThingDef[@Name="CrateBase" or defName="StargateMod_Stargate" or defName="StargateMod_DialHomeDevice"]</xpath>
+                <value>
+                    <designationCategory>StargateMod_DEV</designationCategory>
+                </value>
+            </Operation>
+            <Operation Class="PatchOperationAdd">
+                <xpath>/Defs</xpath>
+                <value>
+                    <DesignationCategoryDef>
+                        <defName>StargateMod_DEV</defName>
+                        <label>SGDEV</label>
+                        <order>1</order>
+                    </DesignationCategoryDef>
+                </value>
+            </Operation>
+        </caseTrue>
+    </Operation>
+</Patch>

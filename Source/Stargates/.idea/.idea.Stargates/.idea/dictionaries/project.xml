@@ -2,10 +2,20 @@
   <dictionary name="project">
     <words>
       <w>ccyt</w>
+      <w>compsg</w>
+      <w>connectaddress</w>
+      <w>connectgate</w>
+      <w>innercontainer</w>
       <w>kawoosh</w>
+      <w>mapparent</w>
+      <w>nullreferenceexception</w>
+      <w>postspawnssetup</w>
       <w>recv</w>
+      <w>sgactive</w>
+      <w>smashphil</w>
       <w>stargates</w>
       <w>stargatesmod</w>
+      <w>vehicleframework</w>
     </words>
   </dictionary>
 </component>

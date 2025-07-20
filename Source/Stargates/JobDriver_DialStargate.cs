@@ -1,10 +1,6 @@
-﻿using System;
-using RimWorld;
+﻿using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 using Verse.Sound;
 using XmlExtensions;
 
@@ -31,7 +27,10 @@ namespace StargatesMod
                 initAction = () =>
                 {
                     CompStargate linkedStargate = dhdComp.GetLinkedStargate();
-                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, 200);
+                    int lockDelay = 900;
+                    if (SettingsManager.GetSetting("ccyt.stargatesmod", "shortenGateDialSeq") == "True") { lockDelay = 200; }
+                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, lockDelay);
+                    if (!dhdComp.Props.selfDialler) { SGSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent)); }
                 }
             };
         }

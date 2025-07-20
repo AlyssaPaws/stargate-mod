@@ -1,10 +1,8 @@
 ﻿using System;
 using RimWorld;
-using RimWorld.Planet;
-using Verse;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
+using Verse;
+using XmlExtensions;
 
 namespace StargatesMod
 {
@@ -17,7 +15,7 @@ namespace StargatesMod
 
             CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             int lockDelay = 900;
-            if (SettingsManager.GetSetting("ccyt.stargatesmod", "shortenGateDialSeq") == "True") { lockDelay = 450; }
+            if (SettingsManager.GetSetting("ccyt.stargatesmod", "shortenGateDialSeq") == "True") lockDelay = 450;
                 sgComp.OpenStargateDelayed(-1, lockDelay);
             sgComp.TicksSinceBufferUnloaded = -150;
             sgComp.IsReceivingGate = true;

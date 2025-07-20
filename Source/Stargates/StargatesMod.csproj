@@ -55,6 +55,10 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="XmlExtensions">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\2574315206\1.6\Assemblies\XmlExtensions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building_Stargate.cs" />
@@ -62,6 +66,8 @@
     <Compile Include="CompGlyphScrap.cs" />
     <Compile Include="CompTargetable_Stargate.cs" />
     <Compile Include="Dialog_RenameSGSite.cs" />
+    <Compile Include="FloatMenuOptionProvider_Stargate.cs" />
+    <Compile Include="FloatMenuOptionProvider_DHD.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="JobDriver_DecodeGlyphs.cs" />
     <Compile Include="JobDriver_InstallIris.cs" />

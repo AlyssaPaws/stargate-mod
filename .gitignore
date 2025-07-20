@@ -2,6 +2,7 @@
 .sln
 .csproj
 .user
+.idea
 Source/Stargates/bin
 Source/Stargates/obj
 Source/Stargates/Properties

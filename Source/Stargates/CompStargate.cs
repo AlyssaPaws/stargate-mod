@@ -6,9 +6,7 @@ using UnityEngine;
 using Vehicles;
 using Verse;
 using Verse.Sound;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Text;
+using XmlExtensions;
 
 namespace StargatesMod
 {
@@ -343,27 +341,11 @@ namespace StargatesMod
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
-                else /*TODO Test with Vehicles?*/
-                {
-                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
-                        _recvBuffer[
-                                0] as Pawn is
-                            VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
-                    {
-                        VehiclePawn vP = _recvBuffer[0] as VehiclePawn;
-                        vP?.DestroyVehicleAndPawns();
-                    }
-                    else _recvBuffer[0].Kill();
-
-                    _recvBuffer.Remove(_recvBuffer[0]);
-                    SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
-                }
-                if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
-                ticksSinceBufferUnloaded++;
-                ticksSinceOpened++;
-                if (isRecievingGate && ticksSinceBufferUnloaded > 2500 && !connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter) { CloseStargate(true); }
+                _recvBuffer.Remove(_recvBuffer[0]);
             }
+
             if (_connectedAddress == -1 && !_recvBuffer.Any()) CloseStargate(false);
+
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
             if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
@@ -402,6 +384,7 @@ namespace StargatesMod
             sb.AppendLine("GateAddress".Translate(GetStargateDesignation(gateAddress)));
             if (!stargateIsActive) { sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst()); }
             else
+            if (!StargateIsActive)
             {
                 if (TicksUntilOpen <= -1)
                     sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
@@ -463,60 +446,10 @@ namespace StargatesMod
             }
         }
 
-        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {
-            if (!stargateIsActive || irisIsActivated || !selPawn.CanReach(this.parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
-            {
-                yield break;
-            }
-            yield return new FloatMenuOption("EnterStargateAction".Translate(), () =>
-            {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
-                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-            });
-            yield return new FloatMenuOption("BringPawnToGateAction".Translate(), () =>
-            {
-                TargetingParameters targetingParameters = new TargetingParameters()
-                {
-                    onlyTargetIncapacitatedPawns = true,
-                    canTargetBuildings = false,
-                    canTargetItems = true,
-                };
-
-                Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
-                {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, this.parent);
-                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
-            });
-            yield break;
-        }
-
-        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(List<Pawn> selPawns)
-        {
-            if (!stargateIsActive) { yield break; }
-            List<Pawn> allowedPawns = new List<Pawn>();
-            foreach (Pawn selPawn in selPawns)
-            {
-                if (selPawn.CanReach(this.parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
-                {
-                    allowedPawns.Add(selPawn);
-                }
-            }
-            yield return new FloatMenuOption("EnterStargateWithSelectedAction".Translate(), () =>
-            {
-                foreach (Pawn selPawn in allowedPawns)
-                {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
-                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                }
-            });
-            yield break;
-        }
-
         private void CleanupGate()
         {
-            if (_connectedStargate != null) CloseStargate(true);
+            if (_connectedStargate != null)
+                CloseStargate(true);
 
             Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
         }
