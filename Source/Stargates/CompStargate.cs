@@ -22,6 +22,7 @@ namespace StargatesMod
         public PlanetTile GateAddress;
         public bool StargateIsActive;
         public bool IsReceivingGate;
+        public bool IsHibernating;
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
         public bool IrisIsActivated = false;
@@ -157,7 +158,7 @@ namespace StargatesMod
             Thing gateOnMap = null;
             foreach (Thing thing in map.listerThings.AllThings)
             {
-                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
+                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate) && !thing.TryGetComp<CompStargate>().IsHibernating)
                 {
                     gateOnMap = thing;
                     break;
@@ -204,12 +205,19 @@ namespace StargatesMod
 
         private void DoUnstableVortex()
         {
-            List<Thing> excludedThings = new List<Thing>() { this.parent };
+            List<Thing> excludedThings = new List<Thing> { parent };
+            List<ThingDef> destroySpecial = new List<ThingDef>();
             foreach (IntVec3 pos in Props.vortexPattern)
             {
-                foreach (Thing thing in this.parent.Map.thingGrid.ThingsAt(this.parent.Position + pos))
+                foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
                 {
-                    if (thing.def.passability == Traversability.Standable) { excludedThings.Add(thing); }
+                    // Exclude anything that is standable, but only if it is a building (any thing that doesn't have a traversability will come back as being Standable) P.S. Doors are standable too.
+                    if (thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Standable && !thing.def.IsDoor)
+                        excludedThings.Add(thing);
+
+                    // Mark for destroying metals that don't use hitpoints
+                    if (thing.def.IsMetal && !thing.def.useHitPoints) 
+                        destroySpecial.Add(thing.def);
                 }
             }
 
@@ -217,14 +225,33 @@ namespace StargatesMod
             {
                 DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
 
-                Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, this.parent.Position, this.parent.Map, WipeMode.Vanish);
+                Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, this.parent.Map, WipeMode.Vanish);
                 explosion.damageFalloff = false;
                 explosion.damAmount = damType.defaultDamage;
-                explosion.Position = this.parent.Position + pos;
+                explosion.Position = parent.Position + pos;
                 explosion.radius = 0.5f;
                 explosion.damType = damType;
                 explosion.StartExplosion(null, excludedThings);
+
+                // Destroy things (Metals) that were marked for destroying
+                foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
+                {
+                    foreach (ThingDef toDestroy in destroySpecial)
+                    {
+                        if (thing.def.defName == toDestroy.defName && !thing.DestroyedOrNull()) thing.Destroy();
+                    }
+                }
             }
+        }
+
+        private void ReInitGate()
+        {
+            if (GetStargateOnMap(parent.Map, parent) != null) return;
+            GateAddress = parent.Map.Tile;
+            Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+            IsHibernating = false;
+
+            SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
         }
 
         public void AddToSendBuffer(Thing thing)
@@ -381,9 +408,10 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(gateAddress)));
-            if (!stargateIsActive) { sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst()); }
-            else
+            sb.AppendLine(!IsHibernating
+                ? "GateAddress".Translate(GetStargateDesignation(GateAddress))
+                : "GateHibernating".Translate());
+
             if (!StargateIsActive)
             {
                 if (TicksUntilOpen <= -1)
@@ -417,6 +445,59 @@ namespace StargatesMod
                 };
                 yield return command;
             }
+
+            if (IsHibernating) /*Gizmo to wake stargate from hibernation*/
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "WakeHibernation".Translate(),
+                    defaultDesc = "WakeHibernationDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
+                    action = ReInitGate
+                };
+                if (GetStargateOnMap(parent.Map, parent) != null) { command.Disable("CannotWake".Translate()); }
+                yield return command;
+            } 
+
+            if (StargateIsActive && ModsConfig.IsActive("smashphil.vehicleframework")) /*Gizmo to send a vehicle through the stargate*/
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "InsertVehicle".Translate(),
+                    defaultDesc = "InsertVehicleDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/CancelLoadVehicle"),
+                    action = delegate()
+                    {
+                        foreach (var thing in parent.Map.thingGrid.ThingsAt(parent.InteractionCell + new IntVec3(0, 0, -1)))
+                        {
+                            if (thing as Pawn is VehiclePawn)
+                            {
+                                VehiclePawn vP = thing as VehiclePawn;
+                                bool vehTypeValid = vP?.VehicleDef.type == VehicleType.Land;
+                                bool vehSizeValid = (vP?.VehicleDef.size.x <= 3 && vP.VehicleDef.size.z <= 5);
+                                
+                                if (vehTypeValid && vehSizeValid) /*Check if vehicle is of tge land variety and of reasonable size*/
+                                {
+                                    if (thing.Spawned) thing.DeSpawn();
+                                    AddToSendBuffer(thing);
+                                    PlayTeleportSound();
+                                }
+                                else
+                                {
+                                    if (!vehTypeValid)
+                                    {
+                                        string rejectMsgType= "StargateEnterBlockedType".Translate();
+                                        Messages.Message(rejectMsgType, MessageTypeDefOf.RejectInput);
+                                    }
+                                    if (!vehSizeValid && vehTypeValid)
+                                    {
+                                        string rejectMsgSize = "StargateEnterBlockedSize".Translate();
+                                        Messages.Message(rejectMsgSize, MessageTypeDefOf.RejectInput);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 };
                 yield return command;
             }

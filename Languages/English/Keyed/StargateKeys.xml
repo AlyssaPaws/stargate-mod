@@ -15,14 +15,19 @@
 	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
+	<CannotDialHibernating>Cannot dial: hibernation mode</CannotDialHibernating>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
+	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
 	
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
+	<WakeHibernation>Wake from hibernation</WakeHibernation>
+	<WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</WakeHibernationDesc>
+  
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
 	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
 	<CloseStargate>Close stargate</CloseStargate>
