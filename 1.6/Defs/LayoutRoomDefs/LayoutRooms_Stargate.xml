@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <LayoutRoomDef>
+    <defName>StargateMod_GateRoom</defName>
+    <requiresSingleRectRoom>true</requiresSingleRectRoom>
+    <minSingleRectWidth>10</minSingleRectWidth>
+    <minSingleRectHeight>14</minSingleRectHeight>
+    <minConnectedRooms>1</minConnectedRooms>
+    <prefabs>
+      <StargateMod_GatePrefab>
+        <countPerHundredCells>1</countPerHundredCells>
+        <minMaxRange>1~1</minMaxRange>
+      </StargateMod_GatePrefab>
+    </prefabs>
+    <parts>
+      <WaspDrone>0.3</WaspDrone>
+      <Gore>0.75</Gore>
+      <CornerArmoredTurret>
+        <countRange>0~3</countRange>
+      </CornerArmoredTurret>
+    </parts>
+    <floorTypes>
+      <li>AncientConcrete</li>
+    </floorTypes>
+    <edgeTerrain>AncientTile</edgeTerrain>
+  </LayoutRoomDef>
+
+</Defs>

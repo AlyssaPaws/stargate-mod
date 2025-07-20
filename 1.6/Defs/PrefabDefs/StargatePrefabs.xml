@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!--
+  <PrefabDef>
+    <defName>IndustrialShelf_Edge</defName>
+    <edgeOnly>true</edgeOnly>
+    <size>(4,1)</size>
+    <things>
+      <AncientIndustrialShelf>
+        <positions>
+          <li>(0, 0, 0)</li>
+          <li>(2, 0, 0)</li>
+        </positions>
+      </AncientIndustrialShelf>
+    </things>
+  </PrefabDef>
+  -->
+
+  <PrefabDef>
+    <defName>StargateMod_GatePrefab</defName>
+    <rotations>North</rotations>
+    <size>(8,12)</size>
+    <things>
+      <StargateMod_DialHomeDevice>
+        <position>(5, 0, 2)</position>
+      </StargateMod_DialHomeDevice>
+      <StargateMod_Stargate>
+        <position>(5, 0, 9)</position>
+      </StargateMod_Stargate>
+    </things>
+  </PrefabDef>
+</Defs>

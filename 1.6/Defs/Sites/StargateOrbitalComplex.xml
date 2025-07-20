@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <SitePartDef ParentName="SpaceSiteBase">
+    <defName>StargateMod_OrbitalStargatePlatformSite</defName>
+    <description>An abandoned orbital platform containing a stargate and valuable resources.</description>
+    <expandingIconTexture>World/WorldObjects/Expanding/AbandonedPlatform</expandingIconTexture>
+    <tags>
+      <li>StargateMod_OrbitalStargatePlatform</li>
+    </tags>
+    <minMapSize>(200, 0, 200)</minMapSize>
+    <copyQuestName>true</copyQuestName>
+    <considerEnteringAsAttack>false</considerEnteringAsAttack>
+    <tags>
+      <li>StargateMod_StargateOrbitalSite</li>
+    </tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>StargateMod_Opportunity_OrbitalStargatePlatform</defName>
+    <linkWithSite>StargateMod_OrbitalStargatePlatformSite</linkWithSite>
+    <order>200</order>
+    <genStep Class="GenStep_OrbitalPlatform">
+      <factionDef>AncientsHostile</factionDef>
+      <platformTerrain>OrbitalPlatform</platformTerrain>
+      <layoutDef>StargateMod_OrbitalStargatePlatform</layoutDef>
+      <orbitalDebrisDef>Manmade</orbitalDebrisDef>
+      <temperature>20</temperature>
+      <spawnSentryDrones>true</spawnSentryDrones>
+      <exteriorPrefabs>
+        <CrashedShuttle>0~1</CrashedShuttle>
+        <BaricadeTurret>2~5</BaricadeTurret>
+      </exteriorPrefabs>
+    </genStep>
+  </GenStepDef>
+</Defs>
