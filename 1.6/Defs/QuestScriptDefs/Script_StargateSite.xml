@@ -6,7 +6,8 @@
 		<rootSelectionWeight>0.6</rootSelectionWeight>
 		<rootMinPoints>0</rootMinPoints>
 		<autoAccept>true</autoAccept>
-		<defaultChallengeRating>1</defaultChallengeRating>
+		<defaultChallengeRating>2</defaultChallengeRating>
+    <successHistoryEvent MayRequire="Ludeon.RimWorld.Ideology">PlayerRaidedSomeone</successHistoryEvent>
 		<questNameRules>
 			<rulesStrings>
 				<li>questName->[ancient] stargate [site]</li>
@@ -106,6 +107,27 @@
 					<worldObject>$site</worldObject>
 					<node Class="QuestNode_End" />
 				</li>
+        
+        <!-- Sometimes sees enemies as defeated immediately, probably due to being fogged. (TODO?) -->
+        <li Class="QuestNode_Signal">
+          <inSignal>site.AllEnemiesDefeated</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+	            <!-- For Testing-->
+	            <!--<li Class="QuestNode_Letter">
+                <label>Hostiles Defeated</label>
+                <text>The hostile group guarding this Stargate site have been defeated.</text>
+              </li>-->
+              <li Class="QuestNode_Notify_PlayerRaidedSomeone">
+                <getRaidersFromMapParent>$site</getRaidersFromMapParent>
+              </li>
+            </nodes>
+          </node>
+        </li>
+        <li Class="QuestNode_End">
+          <inSignal>site.AllEnemiesDefeated</inSignal>
+          <outcome>Success</outcome>
+        </li>
 			</nodes>
 		</root>
 	</QuestScriptDef>
