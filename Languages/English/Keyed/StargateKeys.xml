@@ -14,6 +14,7 @@
 	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
 	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
+	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
 	<CannotDialHibernating>Cannot dial: hibernation mode</CannotDialHibernating>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>

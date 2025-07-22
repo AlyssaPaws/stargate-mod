@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -55,16 +56,40 @@ namespace StargatesMod
             }
             if (sgComp.TicksUntilOpen > -1)
             {
-                yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
-                yield break;
+                if (sgComp.IsReceivingGate)
+                {
+                    yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
+                    yield break;
+                }
+                yield return new FloatMenuOption("CannotDialAlreadyDialling".Translate(), null);
+                yield break; 
             }
                 
             foreach (PlanetTile pT in addressComp.AddressList)
             {
                 if (pT == sgComp.GateAddress) continue;
                 
-                MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
-                yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), sgMap.Label), () =>
+                Site sgSite = Find.WorldObjects.SiteAt(pT);
+
+                string siteLabel = sgSite.Label;
+                
+                /*If the site has the generic "ancient stargate site" name instead of the proper name generated for the quest, correct it by assigning the proper name as a customLabel.
+                 So the floatMenu option won't show the generic name for every regular surface site, making it more obvious which site is which.*/
+                if (sgSite.Label == "ancient stargate site")
+                {
+                    List<Quest> quests = Find.QuestManager.ActiveQuestsListForReading;
+                    foreach (Quest q in quests)
+                    {
+                        if (!q.QuestLookTargets.Contains(sgSite)) continue;
+                        
+                        sgSite.customLabel = q.name;
+                        siteLabel = sgSite.customLabel;
+                        break;
+                    }
+                }
+                
+                
+                yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), siteLabel), () =>
                 {
                     dhdComp.lastDialledAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
