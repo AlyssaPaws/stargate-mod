@@ -25,7 +25,7 @@ namespace StargatesMod
             CompStargate sgComp = dhdComp.GetLinkedStargate();
             
             
-            if (!CanReachDHD(context.FirstSelectedPawn, clickedThing) || dhdComp.IsConnectedToStargate) yield break;
+            if (!CanReachDHD(context.FirstSelectedPawn, clickedThing) || !dhdComp.IsConnectedToStargate) yield break;
             
             if (dhdComp.Props.requiresPower)
             {
