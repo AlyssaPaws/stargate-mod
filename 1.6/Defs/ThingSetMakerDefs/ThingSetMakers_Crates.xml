@@ -775,12 +775,11 @@
     </root>
   </ThingSetMakerDef>
   
+  <!--Dummy ThingSetMakerDef to satisfy KCSG without it adding a second reward to each crate-->
   <ThingSetMakerDef>
-    <defName>StargateMod_DummyThingSetMaker</defName> <!--TODO See if fine without the commented out section?-->
-    <!--<root Class="ThingSetMaker_RandomOption">
+    <defName>StargateMod_DummyThingSetMaker</defName>
+    <root Class="ThingSetMaker_RandomOption">
       <options>
-
-        ~1~ Glyph Slab @1@
         <li>
           <weight>1</weight>
           <thingSetMaker Class="ThingSetMaker_Count">
@@ -795,6 +794,6 @@
           </thingSetMaker>
         </li>
       </options>
-    </root>-->
+    </root>
   </ThingSetMakerDef>
 </Defs>

@@ -62,16 +62,24 @@ namespace StargatesMod
                     ThingDef dhdDef = null;
 
                     List<Thing> things = __instance.AllThings.ToList();
-                    for (int i = 0; i < things.Count; i++)
+                    foreach (var t in things)
                     {
-                        Thing inner = things[i].GetInnerIfMinified();
-                        if (inner != null && inner.def.thingClass == typeof(Building_Stargate)) { gateDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
+                        Thing inner = t.GetInnerIfMinified();
+                        if (inner == null || inner.def.thingClass != typeof(Building_Stargate)) continue;
+                        
+                        gateDef = inner.def; 
+                        t.holdingOwner.Remove(t); 
+                        break;
                     }
                     things = __instance.AllThings.ToList();
-                    for (int i = 0; i < things.Count; i++)
+                    foreach (var t in things)
                     {
-                        Thing inner = things[i].GetInnerIfMinified();
-                        if (inner?.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate)) dhdDef = inner.def; things[i].holdingOwner.Remove(things[i]); break;
+                        Thing inner = t.GetInnerIfMinified();
+                        if (inner?.TryGetComp<CompDialHomeDevice>() == null || inner.def.thingClass == typeof(Building_Stargate)) continue;
+                        
+                        dhdDef = inner.def; 
+                        t.holdingOwner.Remove(t); 
+                        break;
                     }
                     WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
                     wo.Tile = __instance.Tile;
