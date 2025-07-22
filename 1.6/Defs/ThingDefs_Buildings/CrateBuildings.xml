@@ -115,7 +115,7 @@
         </graphicData>
       </li>
       <li Class="CompProperties_LootSpawn">
-        <contents>StargateMod_Reward_CratePersonnel</contents>
+        <contents>StargateMod_Reward_CratePersonnelSupplies</contents>
       </li>
     </comps>
   </ThingDef>
