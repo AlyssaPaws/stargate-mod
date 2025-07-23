@@ -211,6 +211,10 @@ namespace StargatesMod
             {
                 foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
                 {
+                    /*Stop vortex from destroying anything in the vortex cells behind the gate, most important for walls of pressurized rooms in orbital locations*/
+                    if (pos == new IntVec3(0, 0, 1) || pos == new IntVec3(1, 0, 1) || pos == new IntVec3(-1, 0, 1)) 
+                        excludedThings.Add(thing);
+                    
                     // Exclude anything that is standable, but only if it is a building (any thing that doesn't have a traversability will come back as being Standable) P.S. Doors are standable too.
                     if (thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Standable && !thing.def.IsDoor)
                         excludedThings.Add(thing);
@@ -225,7 +229,7 @@ namespace StargatesMod
             {
                 DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
 
-                Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, this.parent.Map, WipeMode.Vanish);
+                Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, parent.Map);
                 explosion.damageFalloff = false;
                 explosion.damAmount = damType.defaultDamage;
                 explosion.Position = parent.Position + pos;
