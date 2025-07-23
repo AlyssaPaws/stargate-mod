@@ -69,23 +69,37 @@ namespace StargatesMod
             {
                 if (pT == sgComp.GateAddress) continue;
                 
-                Site sgSite = Find.WorldObjects.SiteAt(pT);
+                Site sgDestSite = Find.WorldObjects.SiteAt(pT);
+                MapParent sgDestNonSite = null;
+                if (sgDestSite == null) sgDestNonSite = Find.WorldObjects.MapParentAt(pT);
 
-                string siteLabel = sgSite.Label;
-                
-                /*If the site has the generic "ancient stargate site" name instead of the proper name generated for the quest, correct it by assigning the proper name as a customLabel.
-                 So the floatMenu option won't show the generic name for every regular surface site, making it more obvious which site is which.*/
-                if (sgSite.Label == "ancient stargate site")
+                string siteLabel = "placeHolder";
+
+                /*Account for the destination address being a non-site, eg player colony*/
+                if (sgDestSite != null)
                 {
-                    List<Quest> quests = Find.QuestManager.ActiveQuestsListForReading;
-                    foreach (Quest q in quests)
+                    siteLabel = sgDestSite.Label;
+                
+                
+                    /*If the site has the generic "ancient stargate site" name instead of the proper name generated for the quest, correct it by assigning the proper name as a customLabel.
+                     So the floatMenu option won't show the generic name for every regular surface site, making it more obvious which site is which.*/
+                    if (sgDestSite.Label == "ancient stargate site")
                     {
-                        if (!q.QuestLookTargets.Contains(sgSite)) continue;
+                        List<Quest> quests = Find.QuestManager.ActiveQuestsListForReading;
+                        foreach (Quest q in quests)
+                        {
+                            if (!q.QuestLookTargets.Contains(sgDestSite)) continue;
                         
-                        sgSite.customLabel = q.name;
-                        siteLabel = sgSite.customLabel;
-                        break;
+                            sgDestSite.customLabel = q.name;
+                            siteLabel = sgDestSite.customLabel;
+                            break;
+                        }
                     }
+                }
+                else if (sgDestNonSite != null) siteLabel = sgDestNonSite.Label;
+                else
+                {
+                    Log.Error($"StargatesMod: Site and MapParent both were null in FloatMenuOptionProvider_DHD");
                 }
                 
                 
