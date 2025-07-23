@@ -171,8 +171,9 @@ namespace StargatesMod
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
             Rand.PushState(address.tileId);
-            //pattern: P(num)(char)-(num)(num)(num)-(num)       Where last num = PlanetLayer ID
-            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}-{address.Layer.LayerID}"; 
+            //pattern: P if Planetary / other, O if orbital + (num)(char)-(num)(num)(num)
+            string pLDesignation = address.Layer.LayerID == 1 ? "O" : "P";
+            string designation = $"{pLDesignation}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
             Rand.PopState();
             return designation;
         }
