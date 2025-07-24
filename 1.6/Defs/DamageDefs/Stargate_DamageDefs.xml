@@ -23,5 +23,20 @@
 		<soundExplosion>StargateMod_SGKawooshExplosion</soundExplosion>
 		<combatLogRules>Damage_Flame</combatLogRules>
 	</DamageDef>
+	
+	<DamageDef>
+		<defName>StargateMod_DisintegrationDeath</defName>
+		<label>DisintegrationDeath</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<deathMessage>{0} has died as a result of failed reintegration in a stargate wormhole.</deathMessage>
+		<hediff>Crush</hediff>
+		<hediffSkin>Cut</hediffSkin>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Blunt</armorCategory>
+		<overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+	</DamageDef>
 
 </Defs>
