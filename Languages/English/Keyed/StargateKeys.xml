@@ -37,7 +37,7 @@
 	<CloseStargate>Close stargate</CloseStargate>
 	<CloseStargateDesc>Close the linked stargate.</CloseStargateDesc>
 	<InsertVehicle>Insert vehicle</InsertVehicle>
-	<InsertVehicleDesc>Insert a vehicle into the stargate. Usage: Vehicle has to be immediately in front of the stargate. Only land type vehicles equal to or smaller than 3 wide, 5 long are able to fit through.</InsertVehicleDesc>
+	<InsertVehicleDesc>Insert a vehicle into the stargate. \nUsage: Vehicle has to be immediately in front of it. \nAllowed type: Land \nMax allowed dimensions: 3x5</InsertVehicleDesc>
 	<CreateSGSite>Create new stargate site</CreateSGSite>
 	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
 	<RenameGateSite>Rename stargate site</RenameGateSite>
