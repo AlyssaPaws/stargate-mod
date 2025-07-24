@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Vehicles;
@@ -351,15 +352,33 @@ namespace StargatesMod
                 }
                 else
                 {
+                    DamageInfo disintDeathInfo =
+                        new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+                    
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
-                        if (ModsConfig.IsActive("smashphil.vehicleframework") && _sendBuffer[0] as Pawn is VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                        /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                        if (ModsConfig.IsActive("smashphil.vehicleframework") && _sendBuffer[i] as Pawn is VehiclePawn)
                         {
-                            VehiclePawn vP = _sendBuffer[0] as VehiclePawn;
-                            vP?.DestroyVehicleAndPawns();
-                        }
+                            VehiclePawn vP = _sendBuffer[i] as VehiclePawn;
+                            if (vP?.AllPawnsAboard != null)
+                            {
+                                foreach (Pawn p in vP.AllPawnsAboard.ToList())
+                                {
+                                    vP.RemovePawn(p);
+                                    p.Kill(disintDeathInfo);
+                                    p.Corpse.Kill();
+                                }
+                            }
                         
-                        else _sendBuffer[i].Kill();
+                            if (!vP.DestroyedOrNull()) vP?.Destroy();
+                        }
+                        else
+                        {
+                            _sendBuffer[i].Kill(disintDeathInfo);
+                            Pawn p = _sendBuffer[i] as Pawn;
+                            p?.Corpse.Kill();
+                        }
 
                         _sendBuffer.Remove(_sendBuffer[i]);
                     }
@@ -371,24 +390,41 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
-                    if (ModsConfig.IsActive("smashphil.vehicleframework") && _recvBuffer[0] as Pawn is VehiclePawn) /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                    /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") && _recvBuffer[0] as Pawn is VehiclePawn)
                         GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
                     else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
 
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
-                else /*TODO Test with Vehicles?*/
+                else
                 {
-                    if (ModsConfig.IsActive("smashphil.vehicleframework") &&
-                        _recvBuffer[
-                                0] as Pawn is
-                            VehiclePawn) /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                    DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f,
+                            999f);
+                    
+                    /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework") && _recvBuffer[0] as Pawn is VehiclePawn)
                     {
                         VehiclePawn vP = _recvBuffer[0] as VehiclePawn;
-                        vP?.DestroyVehicleAndPawns();
+                        if (vP?.AllPawnsAboard != null)
+                        {
+                            foreach (Pawn p in vP.AllPawnsAboard.ToList())
+                            {
+                                vP.RemovePawn(p);
+                                p.Kill(disintDeathInfo);
+                                p.Corpse.Kill();
+                            }
+                        }
+                        
+                        if (!vP.DestroyedOrNull()) vP?.Destroy();
                     }
-                    else _recvBuffer[0].Kill();
+                    else
+                    {
+                        _recvBuffer[0].Kill(disintDeathInfo);
+                        Pawn p = _recvBuffer[0] as Pawn;
+                        p?.Corpse.Kill();
+                    }
 
                     _recvBuffer.Remove(_recvBuffer[0]);
                     SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
