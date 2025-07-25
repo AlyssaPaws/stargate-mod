@@ -527,17 +527,18 @@ namespace StargatesMod
                     defaultLabel = "InsertVehicle".Translate(),
                     defaultDesc = "InsertVehicleDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/CancelLoadVehicle"),
-                    action = delegate()
+                    action = delegate
                     {
                         foreach (var thing in parent.Map.thingGrid.ThingsAt(parent.InteractionCell + new IntVec3(0, 0, -1)))
                         {
                             if (thing as Pawn is VehiclePawn)
                             {
                                 VehiclePawn vP = thing as VehiclePawn;
+                                
+                                /*Check if vehicle is of tge land variety and of reasonable size*/
                                 bool vehTypeValid = vP?.VehicleDef.type == VehicleType.Land;
                                 bool vehSizeValid = (vP?.VehicleDef.size.x <= 3 && vP.VehicleDef.size.z <= 5);
-                                
-                                if (vehTypeValid && vehSizeValid) /*Check if vehicle is of tge land variety and of reasonable size*/
+                                if (vehTypeValid && vehSizeValid) 
                                 {
                                     if (thing.Spawned) thing.DeSpawn();
                                     AddToSendBuffer(thing);
@@ -565,15 +566,20 @@ namespace StargatesMod
 
             if (Prefs.DevMode)
             {
-                Command_Action command = new Command_Action
+                Command_Action command;
+
+                if (Props.canHaveIris)
                 {
-                    defaultLabel = "Add/remove iris",
-                    action = delegate
+                    command = new Command_Action
                     {
-                        HasIris = !HasIris;
-                    }
-                };
-                yield return command;
+                        defaultLabel = "Add/remove iris",
+                        action = delegate
+                        {
+                            HasIris = !HasIris;
+                        }
+                    };
+                    yield return command;
+                }
                 command = new Command_Action
                 {
                     defaultLabel = "Force close",
