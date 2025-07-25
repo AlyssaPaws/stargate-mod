@@ -36,7 +36,7 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_IrisInstallKit</defName>
 		<label>iris installation kit</label>
-		<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
+		<description>A kit containing an iris, a metal shield that when installed on a stargate can be closed to cover the event horizon. The iris then prevents anything or anyone trying to come through from being reintegrated, permanently killing the thing or person.\nIf you are gateing back home and have an iris installed, make sure you open the iris before going through!\n\n"We have in place an impenetrable shield called an iris."</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
 			<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
@@ -59,7 +59,7 @@
 				<useJob>StargateMod_InstallIris</useJob>
 				<useLabel>Install iris</useLabel>
 				<useDuration>5000</useDuration>
-				<showUseGizmo>true</showUseGizmo> <!-- TODO Test ?-->
+				<showUseGizmo>true</showUseGizmo>
 			</li>
 		
 			<li Class="CompProperties_Targetable">
