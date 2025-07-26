@@ -27,7 +27,7 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
-            return "GateAddress".Translate(CompStargate.GetStargateDesignation(Tile));
+            return "SGM_GateAddress".Translate(CompStargate.GetStargateDesignation(Tile));
         }
 
         public override void SpawnSetup()
@@ -95,8 +95,8 @@ namespace StargatesMod
             {
                 icon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename"),
                 action = () => { Find.WindowStack.Add(new Dialog_RenameSGSite(this)); },
-                defaultLabel = "RenameGateSite".Translate(),
-                defaultDesc = "RenameGateSiteDesc".Translate()
+                defaultLabel = "SGM_RenameGateSite".Translate(),
+                defaultDesc = "SGM_RenameGateSiteDesc".Translate()
             };
         }
 

@@ -1,53 +1,65 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<!--Mod name-->
+	<SGM_StargatesMod>Stargates!</SGM_StargatesMod>
 	
-	<Incoming>incoming</Incoming>
-	<Outgoing>outgoing</Outgoing>
-	<IrisClosed>CLOSED</IrisClosed>
-	<IrisOpen>OPEN</IrisOpen>
+	<!--Individual words-->
+	<SGM_Incoming>incoming</SGM_Incoming>
+	<SGM_Outgoing>outgoing</SGM_Outgoing>
+	<SGM_IrisClosed>CLOSED</SGM_IrisClosed>
+	<SGM_IrisOpen>OPEN</SGM_IrisOpen>
 	
-	<PocketMapNo>Pocket maps do not support establishing a wormhole connection.</PocketMapNo>
-  
-	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
-	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
-	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
-	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
-	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
-	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
-	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
-	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
-	<CannotDialHibernating>Cannot dial: hibernation mode</CannotDialHibernating>
-	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
-	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
-	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
-	<StargateEnterBlockedType>Stargate entry blocked: Vehicle type can not go through the gate.</StargateEnterBlockedType>
-	<StargateEnterBlockedSize>Stargate entry blocked: Vehicle does not fit through the gate.</StargateEnterBlockedSize>
+	<!--Notification message text-->
+	<SGM_PocketMapDisallowed>Pocket maps do not support stargate addresses.</SGM_PocketMapDisallowed>
+	<SGM_GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM_GateDialFailed>
+	<SGM_GateIsNotActive>Stargate is not active.</SGM_GateIsNotActive>
+	<SGM_CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM_CannotCloseIncoming>
+	<SGM_CannotDialGateIsActive>Cannot dial: stargate is already active</SGM_CannotDialGateIsActive>
+	<SGM_CannotDialNoDestinations>Cannot dial: no available destinations</SGM_CannotDialNoDestinations>
+	<SGM_CannotDialIncoming>Cannot dial: incoming wormhole</SGM_CannotDialIncoming>
+	<SGM_CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM_CannotDialAlreadyDialling>
+	<SGM_CannotDialNoPower>Cannot dial: no power</SGM_CannotDialNoPower>
+	<SGM_CannotDialHibernating>Cannot dial: hibernation mode</SGM_CannotDialHibernating>
+	<SGM_NoGateInCaravan>Stargate required in caravan inventory.</SGM_NoGateInCaravan>
+	<SGM_RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM_RespawnGateString>
+	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
+	<SGM_StargateEnterBlockedType>Stargate entry blocked: Vehicle type can not go through the gate.</SGM_StargateEnterBlockedType>
+	<SGM_StargateEnterBlockedSize>Stargate entry blocked: Vehicle does not fit through the gate.</SGM_StargateEnterBlockedSize>
 	
-	<GateHibernating>Address conflict: Gate in hibernation mode.</GateHibernating>
-	<GateAddress>Stargate address: {0}</GateAddress>
-	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
-	<IrisStatus>Iris is [{0}]</IrisStatus>
-	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
+	<!--InspectString text-->
+	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
+	<SGM_GateAddress>Stargate address: {0}</SGM_GateAddress>
+	<SGM_ConnectedToGate>Connected to stargate: {0} ({1})</SGM_ConnectedToGate>
+	<SGM_IrisStatus>Iris is [{0}]</SGM_IrisStatus>
+	<SGM_TimeUntilGateLock>Time until lock: {0}</SGM_TimeUntilGateLock>
 	
-	<WakeHibernation>Wake from hibernation</WakeHibernation>
-	<WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</WakeHibernationDesc>
-  
-	<OpenCloseIris>Open/close iris</OpenCloseIris>
-	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
-	<CloseStargate>Close stargate</CloseStargate>
-	<CloseStargateDesc>Close the linked stargate.</CloseStargateDesc>
-	<InsertVehicle>Insert vehicle</InsertVehicle>
-	<InsertVehicleDesc>Insert a vehicle into the stargate. \nUsage: Vehicle has to be immediately in front of it. \nAllowed type: Land \nMax allowed dimensions: 3x5</InsertVehicleDesc>
-	<CreateSGSite>Create new stargate site</CreateSGSite>
-	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
-	<RenameGateSite>Rename stargate site</RenameGateSite>
-	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
+	<!--Gizmo labels and descriptions-->
+	<SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
+	<SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
+	<SGM_OpenCloseIris>Open/close iris</SGM_OpenCloseIris>
+	<SGM_OpenCloseIrisDesc>Open or close this stargate's iris.</SGM_OpenCloseIrisDesc>
+	<SGM_CloseStargate>Close stargate</SGM_CloseStargate>
+	<SGM_CloseStargateDesc>Close the linked stargate.</SGM_CloseStargateDesc>
+	<SGM_InsertVehicle>Insert vehicle</SGM_InsertVehicle>
+	<SGM_InsertVehicleDesc>Insert a vehicle into the stargate. \nUsage: Vehicle has to be immediately in front of it. \nAllowed type: Land \nMax allowed dimensions: 3x5</SGM_InsertVehicleDesc>
+	<SGM_CreateSGSite>Create new stargate site</SGM_CreateSGSite>
+	<SGM_CreateSGSiteDesc>Create a new stargate site at this location.</SGM_CreateSGSiteDesc>
+	<SGM_RenameGateSite>Rename stargate site</SGM_RenameGateSite>
+	<SGM_RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM_RenameGateSiteDesc>
 	
-	<EnterStargateAction>Enter stargate</EnterStargateAction>
-	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
-	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
-	<DialGate>Dial {0} ({1})</DialGate>
-	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>
+	<!--FloatMenu labels-->
+	<SGM_EnterStargateAction>Enter stargate</SGM_EnterStargateAction>
+	<SGM_EnterStargateWithSelectedAction>Enter stargate with selected</SGM_EnterStargateWithSelectedAction>
+	<SGM_BringPawnToGateAction>Bring downed pawn to stargate</SGM_BringPawnToGateAction>
+	<SGM_DialGate>Dial {0} ({1})</SGM_DialGate>
+	<SGM_DecodeSGSymbols>Decode symbols</SGM_DecodeSGSymbols>
+	<SGM_CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM_CannotDecodeSGSymbols>
 	
+	<!-- == Settings keys == -->
+	<!--Settings Categories-->
+	<SGM_SettingsCat_Main>Main settings</SGM_SettingsCat_Main>
+	
+	<!--Settings labels and tooltips-->
+	<SGM_ShortenDialSeqLabel>Shorten stargate dial sequence length</SGM_ShortenDialSeqLabel>
+	<SGM_ShortenDialSeqTT>For the impatient. Shortens the stargate dial sequence from 15 seconds to 5.</SGM_ShortenDialSeqTT>
 </LanguageData>

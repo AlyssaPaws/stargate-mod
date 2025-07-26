@@ -48,7 +48,7 @@ namespace StargatesMod
 
             if (!tmpStargateEnteringPawns.NullOrEmpty())
             {
-                yield return new FloatMenuOption("EnterStargateAction".Translate(), delegate
+                yield return new FloatMenuOption("SGM_EnterStargateAction".Translate(), delegate
                 {
                     foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
                     {
@@ -59,7 +59,7 @@ namespace StargatesMod
                 }, MenuOptionPriority.High);
 
                 
-                yield return new FloatMenuOption("BringPawnToGateAction".Translate(), () =>
+                yield return new FloatMenuOption("SGM_BringPawnToGateAction".Translate(), () =>
                 {
                     TargetingParameters targetingParameters = new TargetingParameters()
                     {

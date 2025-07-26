@@ -87,11 +87,11 @@ namespace StargatesMod
                     wo.DhdDef = dhdDef;
                     Find.WorldObjects.Add(wo);
                 },
-                defaultLabel = "CreateSGSite".Translate(),
-                defaultDesc = "CreateSGSiteDesc".Translate()
+                defaultLabel = "SGM_CreateSGSite".Translate(),
+                defaultDesc = "SGM_CreateSGSiteDesc".Translate()
             };
             StringBuilder reason = new StringBuilder();
-            if (!containsStargate) command.Disable("NoGateInCaravan".Translate());
+            if (!containsStargate) command.Disable("SGM_NoGateInCaravan".Translate());
             else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
             yield return command;
         }

@@ -75,7 +75,7 @@ namespace StargatesMod
             Thing gate = GetDialledStargate(address);
             if (address > -1 && (gate == null || gate.TryGetComp<CompStargate>().StargateIsActive))
             {
-                Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
+                Messages.Message("SGM_GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
                 SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
                 return;
             }
@@ -470,19 +470,19 @@ namespace StargatesMod
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(!IsHibernating
-                ? "GateAddress".Translate(GetStargateDesignation(GateAddress))
-                : "GateHibernating".Translate());
+                ? "SGM_GateAddress".Translate(GetStargateDesignation(GateAddress))
+                : "SGM_GateHibernating".Translate());
 
             if (!StargateIsActive)
             {
                 if (TicksUntilOpen <= -1)
                     sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             }
-            else sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
-                (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+            else sb.AppendLine("SGM_ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
+                (IsReceivingGate ? "SGM_Incoming" : "SGM_Outgoing").Translate()));
             
-            if (HasIris) sb.AppendLine("IrisStatus".Translate((IrisIsActivated ? "IrisClosed" : "IrisOpen").Translate()));
-            if (TicksUntilOpen > 0) sb.AppendLine("TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
+            if (HasIris) sb.AppendLine("SGM_IrisStatus".Translate((IrisIsActivated ? "SGM_IrisClosed" : "SGM_IrisOpen").Translate()));
+            if (TicksUntilOpen > 0) sb.AppendLine("SGM_TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
             return sb.ToString().TrimEndNewlines();
         }
 
@@ -494,8 +494,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "OpenCloseIris".Translate(),
-                    defaultDesc = "OpenCloseIrisDesc".Translate(),
+                    defaultLabel = "SGM_OpenCloseIris".Translate(),
+                    defaultDesc = "SGM_OpenCloseIrisDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get(Props.irisTexture),
                     action = delegate
                     {
@@ -511,12 +511,12 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "WakeHibernation".Translate(),
-                    defaultDesc = "WakeHibernationDesc".Translate(),
+                    defaultLabel = "SGM_WakeHibernation".Translate(),
+                    defaultDesc = "SGM_WakeHibernationDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
                     action = ReInitGate
                 };
-                if (GetStargateOnMap(parent.Map, parent) != null) { command.Disable("CannotWake".Translate()); }
+                if (GetStargateOnMap(parent.Map, parent) != null) { command.Disable("SGM_CannotWake".Translate()); }
                 yield return command;
             } 
 
@@ -524,8 +524,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "InsertVehicle".Translate(),
-                    defaultDesc = "InsertVehicleDesc".Translate(),
+                    defaultLabel = "SGM_InsertVehicle".Translate(),
+                    defaultDesc = "SGM_InsertVehicleDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/CancelLoadVehicle"),
                     action = delegate
                     {
@@ -548,12 +548,12 @@ namespace StargatesMod
                                 {
                                     if (!vehTypeValid)
                                     {
-                                        string rejectMsgType= "StargateEnterBlockedType".Translate();
+                                        string rejectMsgType= "SGM_StargateEnterBlockedType".Translate();
                                         Messages.Message(rejectMsgType, MessageTypeDefOf.RejectInput);
                                     }
                                     if (!vehSizeValid && vehTypeValid)
                                     {
-                                        string rejectMsgSize = "StargateEnterBlockedSize".Translate();
+                                        string rejectMsgSize = "SGM_StargateEnterBlockedSize".Translate();
                                         Messages.Message(rejectMsgSize, MessageTypeDefOf.RejectInput);
                                     }
                                 }
@@ -632,7 +632,7 @@ namespace StargatesMod
 
         public override string CompInspectStringExtra()
         {
-            return base.CompInspectStringExtra() + "RespawnGateString".Translate();
+            return base.CompInspectStringExtra() + "SGM_RespawnGateString".Translate();
         }
         #endregion
     }
