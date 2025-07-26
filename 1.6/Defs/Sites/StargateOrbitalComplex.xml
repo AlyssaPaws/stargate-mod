@@ -3,6 +3,7 @@
   <SitePartDef ParentName="SpaceSiteBase">
     <defName>StargateMod_OrbitalStargatePlatformSite</defName>
     <description>An abandoned orbital platform containing a stargate and valuable resources.</description>
+    <workerClass>StargatesMod.SitePartWorker_Stargate</workerClass>
     <expandingIconTexture>World/WorldObjects/Expanding/AbandonedPlatform</expandingIconTexture>
     <tags>
       <li>StargateMod_OrbitalStargatePlatform</li>
