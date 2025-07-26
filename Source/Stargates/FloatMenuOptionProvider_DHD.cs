@@ -79,22 +79,8 @@ namespace StargatesMod
                 if (sgDestSite != null)
                 {
                     siteLabel = sgDestSite.Label;
-                
-                
-                    /*If the site has the generic "ancient stargate site" name instead of the proper name generated for the quest, correct it by assigning the proper name as a customLabel.
-                     So the floatMenu option won't show the generic name for every regular surface site, making it more obvious which site is which.*/
-                    if (sgDestSite.Label == "ancient stargate site")
-                    {
-                        List<Quest> quests = Find.QuestManager.ActiveQuestsListForReading;
-                        foreach (Quest q in quests)
-                        {
-                            if (!q.QuestLookTargets.Contains(sgDestSite)) continue;
-                        
-                            sgDestSite.customLabel = q.name;
-                            siteLabel = sgDestSite.customLabel;
-                            break;
-                        }
-                    }
+
+                    if (sgDestSite.Label == "ancient stargate site") siteLabel = sgDestSite.customLabel;
                 }
                 else if (sgDestNonSite != null) siteLabel = sgDestNonSite.Label;
                 else
