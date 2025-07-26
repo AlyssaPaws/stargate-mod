@@ -3,23 +3,16 @@
   <XmlExtensions.SettingsMenuDef>
     <defName>CCYT_StargatesMod</defName>
     <modId>ccyt.stargatesmod</modId>
-    <label>Stargates!</label>
+    <label>Stargates! Optional Patches</label>
     <defaultSpacing>2</defaultSpacing>
     <settings>
-      <li Class="XmlExtensions.Setting.Checkbox">
-        <key>shortenGateDialSeq</key>
-        <label>Shorten gate dialling sequence</label>
-        <defaultValue>false</defaultValue>
-        <tooltip>Minimalize the gate dialling sequence , meaning the gate will finish dialling quicker but no fun chevron sounds :( \n(default is already shorter (3x chevrons instead of the usual 7x))</tooltip>
-        <highlight>true</highlight>
-      </li>
 
       <!-- Dev Tools -->
       <li Class="XmlExtensions.Setting.Checkbox">
         <key>SGDev</key>
-        <label>SG Dev mode</label>
+        <label>Stargates! Dev mode</label>
         <defaultValue>false</defaultValue>
-        <tooltip>Only for StargateMod development purposes</tooltip>
+        <tooltip>Only for StargatesMod development purposes</tooltip>
         <highlight>true</highlight>
       </li>
     </settings> 

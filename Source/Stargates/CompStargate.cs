@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using StargatesMod.Mod_Settings;
 using UnityEngine;
 using Vehicles;
 using Verse;
@@ -37,6 +38,8 @@ namespace StargatesMod
         private Graphic _stargatePuddle;
         private Graphic _stargateIris;
 
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
+        
         public CompProperties_Stargate Props => (CompProperties_Stargate)props;
 
         Graphic StargatePuddle =>
@@ -287,7 +290,7 @@ namespace StargatesMod
             base.CompTick();
             if (TicksUntilOpen > 0)
             {
-                if (SettingsManager.GetSetting("ccyt.stargatesmod", "shortenGateDialSeq") == "False")
+                if (!_settings.ShortenGateDialSeq)
                 {
                     if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
                     {
