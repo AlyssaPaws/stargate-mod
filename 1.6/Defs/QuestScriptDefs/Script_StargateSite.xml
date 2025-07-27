@@ -49,7 +49,7 @@
 
 				<li Class="QuestNode_Set">
 					<name>siteDistRange</name>
-					<value>10~500</value>
+					<value>5~100</value>
 				</li>
 				
 				<li Class="QuestNode_GetSiteTile">

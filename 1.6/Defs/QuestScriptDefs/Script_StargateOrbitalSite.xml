@@ -102,7 +102,7 @@
           <canBeSpace>true</canBeSpace>
           <sitePartDef>StargateMod_OrbitalStargatePlatformSite</sitePartDef>
           <worldObjectDef>ClaimableSpaceSite</worldObjectDef>
-          <distanceFromColonyRange>10~500</distanceFromColonyRange> <!-- distance is in on the orbital layer tiles -->
+          <distanceFromColonyRange>5~75</distanceFromColonyRange> <!-- distance is in on the orbital layer tiles -->
         </li>
 
 	      <li Class="StargatesMod.QuestNode_AddStargateAddresses">
