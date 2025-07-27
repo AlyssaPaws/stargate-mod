@@ -47,6 +47,11 @@
 					</elseNode>
 				</li>
 
+				<li Class="QuestNode_Set">
+					<name>siteDistRange</name>
+					<value>10~500</value>
+				</li>
+				
 				<li Class="QuestNode_GetSiteTile">
 					<storeAs>siteTile</storeAs>
 					<preferCloserTiles>false</preferCloserTiles>

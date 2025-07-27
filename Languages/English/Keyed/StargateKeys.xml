@@ -57,7 +57,7 @@
 	
 	<!-- == Settings keys == -->
 	<!--Settings Categories-->
-	<SGM_SettingsCat_Main>Main settings</SGM_SettingsCat_Main>
+	<SGM_SettingsCat_Main>Preferences</SGM_SettingsCat_Main>
 	
 	<!--Settings labels and tooltips-->
 	<SGM_ShortenDialSeqLabel>Shorten stargate dial sequence length</SGM_ShortenDialSeqLabel>

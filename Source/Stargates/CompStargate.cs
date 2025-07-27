@@ -355,8 +355,7 @@ namespace StargatesMod
                 }
                 else
                 {
-                    DamageInfo disintDeathInfo =
-                        new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+                    DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
                     
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
@@ -463,9 +462,8 @@ namespace StargatesMod
             //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             if (transComp != null && transComp.innerContainer == null)
-            {
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
-            }
+            
             if (Prefs.LogVerbose) Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
         }
 
