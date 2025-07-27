@@ -28,7 +28,6 @@
 	</modDependencies>
 	<loadAfter>
 		<li>oskarpotocki.vanillafactionsexpanded.core</li>
-		<li>imranfish.xmlextensions</li>
 		<li>smashphil.vehicleframework</li>
 	</loadAfter>
 </ModMetaData>

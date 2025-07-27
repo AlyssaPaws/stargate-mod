@@ -44,6 +44,15 @@ namespace StargatesMod.Mod_Settings
             sec2.Label("Setting4");
             listingStandard.EndSection(sec2);
             
+            listingStandard.Gap();
+            
+            /*Toggleable patches notice*/
+            Listing_Standard SecTP = listingStandard.BeginSection(75);
+            SecTP.Label("SGM_ToggleablePatchesHeader".Translate());
+            SecTP.GapLine();
+            SecTP.Label("SGM_ToggleablePatchesText".Translate());
+            listingStandard.EndSection(SecTP);
+            
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
         }

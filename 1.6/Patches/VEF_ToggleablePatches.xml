@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+    <Operation Class="VEF.PatchOperationToggableSequence">
+        <enabled>False</enabled>
+        <label>StargatesMod DevMode (Structure Design)</label>
+        <operations>
+            <li Class="PatchOperationAdd">
+                <xpath>/Defs/ThingDef[@Name="CrateBase" or defName="StargateMod_Stargate" or defName="StargateMod_DialHomeDevice"]</xpath>
+                <value>
+                    <designationCategory>StargateMod_DEV</designationCategory>
+                </value>
+            </li>
+            <li Class="PatchOperationAdd">
+                <xpath>/Defs</xpath>
+                <value>
+                    <DesignationCategoryDef>
+                        <defName>StargateMod_DEV</defName>
+                        <label>SGDEV</label>
+                        <order>1</order>
+                    </DesignationCategoryDef>
+                </value>
+            </li>
+        </operations>
+    </Operation>
+</Patch>

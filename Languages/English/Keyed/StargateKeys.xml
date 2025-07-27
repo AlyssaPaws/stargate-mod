@@ -62,4 +62,8 @@
 	<!--Settings labels and tooltips-->
 	<SGM_ShortenDialSeqLabel>Shorten stargate dial sequence length</SGM_ShortenDialSeqLabel>
 	<SGM_ShortenDialSeqTT>For the impatient. Shortens the stargate dial sequence from 15 seconds to 5.</SGM_ShortenDialSeqTT>
+	
+	<!--Toggleable patches notice-->
+	<SGM_ToggleablePatchesHeader>Optional Patches</SGM_ToggleablePatchesHeader>
+	<SGM_ToggleablePatchesText>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</SGM_ToggleablePatchesText>
 </LanguageData>
