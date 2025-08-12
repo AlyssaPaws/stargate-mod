@@ -21,10 +21,8 @@
 	<SGM_CannotDialNoPower>Cannot dial: no power</SGM_CannotDialNoPower>
 	<SGM_NoGateInCaravan>Stargate required in caravan inventory.</SGM_NoGateInCaravan>
 	<SGM_RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM_RespawnGateString>
-	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
-	
+
 	<!--InspectString text-->
-	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
 	<SGM_GateAddress>Stargate address: {0}</SGM_GateAddress>
 	<SGM_ConnectedToGate>Connected to stargate: {0} ({1})</SGM_ConnectedToGate>
 	<SGM_IrisStatus>Iris is [{0}]</SGM_IrisStatus>
@@ -47,5 +45,11 @@
 	<SGM_DialGate>Dial {0} ({1})</SGM_DialGate>
 	<SGM_DecodeSGSymbols>Decode symbols</SGM_DecodeSGSymbols>
 	<SGM_CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM_CannotDecodeSGSymbols>
-
+	
+	<!-- == Settings keys == -->
+	<!--Settings Categories-->
+	<SGM_SettingsCat_Main>Options</SGM_SettingsCat_Main>
+	
+	<!--Settings labels and tooltips-->
+	<!--.....-->
 </LanguageData>
