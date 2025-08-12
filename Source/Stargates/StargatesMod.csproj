@@ -68,6 +68,8 @@
     <Compile Include="JobDriver_DecodeGlyphs.cs" />
     <Compile Include="JobDriver_InstallIris.cs" />
     <Compile Include="JobDriver_BringToStargate.cs" />
+    <Compile Include="Mod Settings\StargateMod_Settings.cs" />
+    <Compile Include="Mod Settings\StargatesMod_Mod.cs" />
     <Compile Include="PlaceWorker_Stargate.cs" />
     <Compile Include="PawnsArrivalModeWorker_Stargate.cs" />
     <Compile Include="JobDriver_DialStargate.cs" />
