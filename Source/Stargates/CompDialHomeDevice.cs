@@ -52,68 +52,6 @@ namespace StargatesMod
             base.PostSpawnSetup(respawningAfterLoad);
             compFacility = parent.GetComp<CompFacility>();
         }
-
-        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {
-            if (!IsConnectedToStargate || !selPawn.CanReach(parent.InteractionCell, PathEndMode.Touch, Danger.Deadly))
-            {
-                yield break;
-            }
-            
-            if (Props.requiresPower)
-            {
-                CompPowerTrader compPowerTrader = this.parent.TryGetComp<CompPowerTrader>();
-
-
-                if (compPowerTrader != null && !compPowerTrader.PowerOn)
-                {
-                    yield return new FloatMenuOption("CannotDialNoPower".Translate(), null);
-                    yield break;
-                }
-            }
-            
-            CompStargate stargate = GetLinkedStargate();
-            
-            if (stargate != null)
-            {
-                if (stargate.StargateIsActive)
-                {
-                    yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
-                    yield break;
-                }
-
-                WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-                addressComp.CleanupAddresses();
-                
-                if (addressComp.AddressList.Count < 2)
-                {
-                    yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
-                    yield break;
-                }
-                
-                if (stargate.TicksUntilOpen > -1)
-                {
-                    yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
-                    yield break;
-                }
-
-
-                
-                foreach (int i in addressComp.AddressList)
-                {
-                    if (i != stargate.GateAddress)
-                    {
-                        MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
-                        {
-                            lastDialledAddress = i;
-                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), parent);
-                            selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                        });
-                    }
-                }
-            }
-        }
         
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
