@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<!--Mod name-->
+	<SGM_StargatesMod>Stargates!</SGM_StargatesMod>
+	
+	<!--Individual words-->
+	<SGM_Incoming>incoming</SGM_Incoming>
+	<SGM_Outgoing>outgoing</SGM_Outgoing>
+	<SGM_IrisClosed>CLOSED</SGM_IrisClosed>
+	<SGM_IrisOpen>OPEN</SGM_IrisOpen>
+	
+	<!--Notification message text-->
+	<SGM_PocketMapDisallowed>Pocket maps do not support stargate addresses.</SGM_PocketMapDisallowed>
+	<SGM_GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM_GateDialFailed>
+	<SGM_GateIsNotActive>Stargate is not active.</SGM_GateIsNotActive>
+	<SGM_CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM_CannotCloseIncoming>
+	<SGM_CannotDialGateIsActive>Cannot dial: stargate is already active</SGM_CannotDialGateIsActive>
+	<SGM_CannotDialNoDestinations>Cannot dial: no available destinations</SGM_CannotDialNoDestinations>
+	<SGM_CannotDialIncoming>Cannot dial: incoming wormhole</SGM_CannotDialIncoming>
+	<SGM_CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM_CannotDialAlreadyDialling>
+	<SGM_CannotDialNoPower>Cannot dial: no power</SGM_CannotDialNoPower>
+	<SGM_NoGateInCaravan>Stargate required in caravan inventory.</SGM_NoGateInCaravan>
+	<SGM_RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM_RespawnGateString>
+	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
+	
+	<!--InspectString text-->
+	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
+	<SGM_GateAddress>Stargate address: {0}</SGM_GateAddress>
+	<SGM_ConnectedToGate>Connected to stargate: {0} ({1})</SGM_ConnectedToGate>
+	<SGM_IrisStatus>Iris is [{0}]</SGM_IrisStatus>
+	<SGM_TimeUntilGateLock>Time until lock: {0}</SGM_TimeUntilGateLock>
+	
+	<!--Gizmo labels and descriptions-->
+	<SGM_OpenCloseIris>Open/close iris</SGM_OpenCloseIris>
+	<SGM_OpenCloseIrisDesc>Open or close this stargate's iris.</SGM_OpenCloseIrisDesc>
+	<SGM_CloseStargate>Close stargate</SGM_CloseStargate>
+	<SGM_CloseStargateDesc>Close the linked stargate.</SGM_CloseStargateDesc>
+	<SGM_CreateSGSite>Create new stargate site</SGM_CreateSGSite>
+	<SGM_CreateSGSiteDesc>Create a new stargate site at this location.</SGM_CreateSGSiteDesc>
+	<SGM_RenameGateSite>Rename stargate site</SGM_RenameGateSite>
+	<SGM_RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM_RenameGateSiteDesc>
+	
+	<!--FloatMenu labels-->
+	<SGM_EnterStargateAction>Enter stargate</SGM_EnterStargateAction>
+	<SGM_EnterStargateWithSelectedAction>Enter stargate with selected</SGM_EnterStargateWithSelectedAction>
+	<SGM_BringPawnToGateAction>Bring downed pawn to stargate</SGM_BringPawnToGateAction>
+	<SGM_DialGate>Dial {0} ({1})</SGM_DialGate>
+	<SGM_DecodeSGSymbols>Decode symbols</SGM_DecodeSGSymbols>
+	<SGM_CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM_CannotDecodeSGSymbols>
 
-	<Incoming>incoming</Incoming>
-	<Outgoing>outgoing</Outgoing>
-	<IrisClosed>CLOSED</IrisClosed>
-	<IrisOpen>OPEN</IrisOpen>
-	
-	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
-	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
-	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
-	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
-	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
-	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
-	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
-	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
-	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
-	<BlockedByLandmark>Not allowed on landmarks.</BlockedByLandmark>
-	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
-	
-	<GateAddress>Stargate address: {0}</GateAddress>
-	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
-	<IrisStatus>Iris is [{0}]</IrisStatus>
-	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
-	
-	<OpenCloseIris>Open/close iris</OpenCloseIris>
-	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
-	<CloseStargate>Close stargate</CloseStargate>
-	<CloseStargateDesc>Close the linked stargate.</CloseStargateDesc>
-	<CreateSGSite>Create new stargate site</CreateSGSite>
-	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
-	<RenameGateSite>Rename stargate site</RenameGateSite>
-	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
-	
-	<EnterStargateAction>Enter stargate</EnterStargateAction>
-	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
-	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
-	<DialGate>Dial {0} ({1})</DialGate>
-	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
-	
 </LanguageData>

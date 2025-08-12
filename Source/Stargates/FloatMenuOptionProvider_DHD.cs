@@ -33,30 +33,30 @@ namespace StargatesMod
                 CompPowerTrader compPowerTrader = dhdComp.parent.TryGetComp<CompPowerTrader>();
                 if (compPowerTrader != null && !compPowerTrader.PowerOn)
                 {
-                    yield return new FloatMenuOption("CannotDialNoPower".Translate(), null);
+                    yield return new FloatMenuOption("SGM_CannotDialNoPower".Translate(), null);
                     yield break;
                 }
             }
             if (sgComp.StargateIsActive)
             {
-                yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
+                yield return new FloatMenuOption("SGM_CannotDialGateIsActive".Translate(), null);
                 yield break;
             }
             WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
             addressComp.CleanupAddresses();
             if (addressComp.AddressList.Count < 2)
             {
-                yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
+                yield return new FloatMenuOption("SGM_CannotDialNoDestinations".Translate(), null);
                 yield break;
             }
             if (sgComp.TicksUntilOpen > -1)
             {
                 if (sgComp.IsReceivingGate)
                 {
-                    yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
+                    yield return new FloatMenuOption("SGM_CannotDialIncoming".Translate(), null);
                     yield break;
                 }
-                yield return new FloatMenuOption("CannotDialAlreadyDialling".Translate(), null);
+                yield return new FloatMenuOption("SGM_CannotDialAlreadyDialling".Translate(), null);
                 yield break; 
             }
                 
@@ -82,7 +82,7 @@ namespace StargatesMod
                 }
                 
                 
-                yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), siteLabel), () =>
+                yield return new FloatMenuOption("SGM_DialGate".Translate(CompStargate.GetStargateDesignation(pT), siteLabel), () =>
                 {
                     dhdComp.lastDialledAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
