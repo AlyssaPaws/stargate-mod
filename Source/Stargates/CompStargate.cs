@@ -129,8 +129,7 @@ namespace StargatesMod
             glowComp.PostSpawnSetup(false);
             if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished opening gate {parent}");
         }
-
-
+        
         public void CloseStargate(bool closeOtherGate)
         {
             CompTransporter transComp = parent.GetComp<CompTransporter>();
