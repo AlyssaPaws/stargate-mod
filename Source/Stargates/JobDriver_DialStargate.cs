@@ -1,10 +1,7 @@
-﻿using System;
-using RimWorld;
+﻿using System.Collections.Generic;
+using StargatesMod.Mod_Settings;
 using Verse;
 using Verse.AI;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 using Verse.Sound;
 
 namespace StargatesMod
@@ -12,6 +9,8 @@ namespace StargatesMod
     public class JobDriver_DialStargate : JobDriver
     {
         private const TargetIndex targetDHD = TargetIndex.A;
+        
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -30,7 +29,10 @@ namespace StargatesMod
                 initAction = () =>
                 {
                     CompStargate linkedStargate = dhdComp.GetLinkedStargate();
-                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, 200);
+                    int lockDelay = 900;
+                    if (_settings.ShortenGateDialSeq) lockDelay = 200;
+                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, lockDelay);
+                    if (!dhdComp.Props.selfDialler) SGSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
                 }
             };
         }
