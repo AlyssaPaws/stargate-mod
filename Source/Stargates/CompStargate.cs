@@ -21,6 +21,7 @@ namespace StargatesMod
         public PlanetTile GateAddress;
         public bool StargateIsActive;
         public bool IsReceivingGate;
+        public bool IsHibernating;
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
         public bool IrisIsActivated = false;
@@ -165,7 +166,6 @@ namespace StargatesMod
             if (Props.explodeOnUse)
             {
                 CompExplosive explosive = parent.TryGetComp<CompExplosive>();
-                
                 if (explosive == null) Log.Warning($"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
                 else explosive.StartWick();
             }
@@ -192,7 +192,7 @@ namespace StargatesMod
             
             return gateOnMap;
         }
-
+        
         public static string GetStargateDesignation(PlanetTile address)
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
@@ -233,6 +233,16 @@ namespace StargatesMod
             }
         }
 
+        private void ReInitGate()
+        {
+            if (GetStargateOnMap(parent.Map, parent) != null) return;
+            GateAddress = parent.Map.Tile;
+            Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+            IsHibernating = false;
+
+            SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
+        }
+        
         public void AddToSendBuffer(Thing thing)
         {
             _sendBuffer.Add(thing);
@@ -358,8 +368,14 @@ namespace StargatesMod
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            GateAddress = parent.Map.Tile;
-            Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+            if (GetStargateOnMap(parent.Map, parent) == null)
+            {
+                GateAddress = parent.Map.Tile;
+                Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+                IsHibernating = false;
+            }
+            else IsHibernating = true;
+
 
             if (StargateIsActive)
             {
@@ -379,17 +395,14 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("SGM.GateAddress".Translate(GetStargateDesignation(GateAddress)));
-            
-            switch (StargateIsActive)
-            {
-                case false when TicksUntilOpen <= -1:
-                    sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
-                    break;
-                case true:
-                    sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
-                    break;
-            }
+            sb.AppendLine(!IsHibernating
+                ? "SGM_GateAddress".Translate(GetStargateDesignation(GateAddress))
+                : "SGM_GateHibernating".Translate());
+            if (!StargateIsActive && TicksUntilOpen <= -1)
+                sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
+            if (StargateIsActive)
+                sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
+                    (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
 
             if (HasIris) sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
             if (TicksUntilOpen > 0) sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
@@ -418,6 +431,19 @@ namespace StargatesMod
                 yield return irisControl;
             }
 
+            if (IsHibernating)
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "SGM_WakeHibernation".Translate(),
+                    defaultDesc = "SGM_WakeHibernationDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
+                    action = ReInitGate
+                };
+                if (GetStargateOnMap(parent.Map, parent) != null) command.Disable("SGM_CannotWake".Translate());
+                yield return command;
+            } 
+            
             if (!Prefs.DevMode) yield break;
             
             Command_Action devAddRemoveIris = new Command_Action
@@ -467,6 +493,7 @@ namespace StargatesMod
             Scribe_Values.Look(ref HasIris, "HasIris");
             Scribe_Values.Look(ref IrisIsActivated, "IrisIsActivated");
             Scribe_Values.Look(ref TicksSinceOpened, "TicksSinceOpened");
+            Scribe_Values.Look(ref IsHibernating, "IsHibernating");
             Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
             Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
             Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);

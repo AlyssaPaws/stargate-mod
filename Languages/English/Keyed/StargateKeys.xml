@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+    <!--Mod name-->
+    <StargatesMod>Stargates!</StargatesMod>
 
 	<SGM.Incoming>incoming</SGM.Incoming>
 	<SGM.Outgoing>outgoing</SGM.Outgoing>
@@ -11,8 +13,7 @@
 	
 	<!--Notification message text-->
 	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
-	<SGM.OnlyOneSGPerMap>Only one of this kind of building can be built per map.</SGM.OnlyOneSGPerMap>
-	<SGM.GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</SGM.GateDialFailed>
+	<SGM.GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM.GateDialFailed>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
 	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
 
@@ -23,6 +24,7 @@
 	<SGM.TimeUntilGateLock>Time until lock: {0}</SGM.TimeUntilGateLock>
     <SGM.StargateStatus>Stargate: {0} {1}</SGM.StargateStatus>
     <SGM.DhdStatus>DHD: {0} {1}</SGM.DhdStatus>
+    <SGM.GateHibernating>Address conflict: Gate in hibernation mode.</SGM.GateHibernating>
     <SGM.RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM.RespawnGateString>
 	
 	<!--Gizmo labels and descriptions-->
@@ -34,6 +36,8 @@
 	<SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
 	<SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
 	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+    <SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
+    <SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
     <SGM.CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM.CannotCloseIncoming>
     <SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
 	
@@ -52,9 +56,22 @@
     <SGM.CannotDialIncoming>Cannot dial: incoming wormhole</SGM.CannotDialIncoming>
     <SGM.CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM.CannotDialAlreadyDialling>
     <SGM.CannotDialNoPower>Cannot dial: no power</SGM.CannotDialNoPower>
+    <SGM.CannotDialHibernating>Cannot dial: gate is hibernating</SGM.CannotDialHibernating>
+
+    <!--Misc-->
+    <SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>
+    
+    
+	<!-- == Settings keys == -->
+	<!--Settings Categories-->
+	<SettingsCat_Main>Options</SettingsCat_Main>
 	
-	<!--Misc-->
-	<SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>
+	<!--Settings labels and tooltips-->
+	<!--.....-->
+	
+	<!--Toggleable patches notice-->
+	<ToggleablePatchesHeader>Optional Patches</ToggleablePatchesHeader>
+	<ToggleablePatchesText>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</ToggleablePatchesText>
 
 
 </LanguageData>
