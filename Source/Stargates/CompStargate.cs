@@ -218,6 +218,27 @@ namespace StargatesMod
             excludedThings.AddRange(from pos in Props.vortexPattern 
                 from thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos) 
                 where thing.def.passability == Traversability.Standable select thing);
+            
+            /*List<ThingDef> destroySpecial = new List<ThingDef>(); // TODO ADD
+            foreach (IntVec3 pos in Props.vortexPattern)
+            {
+                foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
+                {
+                    // Stop vortex from destroying anything in the vortex cells behind the gate, most important for walls of pressurized rooms in orbital locations
+                    if (pos == new IntVec3(0, 0, 1) || pos == new IntVec3(1, 0, 1) || pos == new IntVec3(-1, 0, 1)) 
+                        excludedThings.Add(thing);
+                    
+                    // TODO ADD
+                    // Exclude anything that is standable, but only if it is a building (and not a door) (any thing that doesn't have a traversability will come back as being Standable)
+                    if (thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Standable && !thing.def.IsDoor)
+                        excludedThings.Add(thing);
+                        
+                    //TODO ADD
+                    // Mark for destroying metals that don't use hitpoints
+                    if (thing.def.IsMetal && !thing.def.useHitPoints) 
+                        destroySpecial.Add(thing.def);
+                }
+            }*/
 
             foreach (IntVec3 pos in Props.vortexPattern)
             {
@@ -230,6 +251,17 @@ namespace StargatesMod
                 explosion.radius = 0.5f;
                 explosion.damType = damType;
                 explosion.StartExplosion(null, excludedThings);
+
+                //TODO ADD
+                //
+                // Destroy things (Metals) that were marked for destroying
+                /*foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
+                {
+                    foreach (ThingDef toDestroy in destroySpecial)
+                    {
+                        if (thing.def.defName == toDestroy.defName && !thing.DestroyedOrNull()) thing.Destroy();
+                    }
+                }*/
             }
         }
 
