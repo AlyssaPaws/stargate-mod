@@ -22,8 +22,16 @@ namespace StargatesMod
             CompDialHomeDevice dhdComp = job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
             this.FailOnDestroyedOrNull(targetDHD);
             this.FailOn(() => dhdComp.GetLinkedStargate().StargateIsActive);
-
-            yield return Toils_Goto.GotoCell(job.GetTarget(targetDHD).Thing.InteractionCell, PathEndMode.OnCell);
+            
+            IntVec3 targetCell = job.GetTarget(targetDHD).Thing.InteractionCell;
+            // If self-dialler, make pawn initiate dial from the (left) side instead of the center
+            int subX = dhdComp.parent.def.size.x / 2;
+            if (dhdComp.Props.selfDialler)
+                targetCell = job.GetTarget(targetDHD).Thing.InteractionCell + new IntVec3(-subX, 0, 0);
+            
+            
+            
+            yield return Toils_Goto.GotoCell(targetCell, PathEndMode.OnCell);
             yield return new Toil
             {
                 initAction = () =>
