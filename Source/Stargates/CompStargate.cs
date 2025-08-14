@@ -395,9 +395,14 @@ private void DoUnstableVortex()
                 }
                 else
                 {
+                    DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+                    
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
-                        _sendBuffer[i].Kill();
+                        _sendBuffer[i].Kill(disintDeathInfo);
+                        Pawn p = _sendBuffer[i] as Pawn;
+                        p?.Corpse.Kill();
+                        
                         _sendBuffer.Remove(_sendBuffer[i]);
                     }
                 }
@@ -414,7 +419,12 @@ private void DoUnstableVortex()
                 }
                 else
                 {
-                    _recvBuffer[0].Kill();
+                    DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+                    
+                    _recvBuffer[0].Kill(disintDeathInfo);
+                    Pawn p = _recvBuffer[0] as Pawn;
+                    p?.Corpse.Kill();
+                    
                     _recvBuffer.Remove(_recvBuffer[0]);
                     SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
                 }
