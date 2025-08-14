@@ -2,6 +2,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using StargatesMod.Mod_Settings;
 using UnityEngine;
@@ -63,7 +64,24 @@ namespace StargatesMod
         {
             get
             {
-                foreach (IntVec3 offset in Props.vortexPattern) yield return offset + parent.Position;
+                Rot4 rot = parent.Rotation;
+                if (rot == Rot4.North)
+                {
+                    foreach (IntVec3 offset in Props.vortexPattern_north) yield return offset + parent.Position;
+                }
+                else if (rot == Rot4.South)
+                {
+                    foreach (IntVec3 offset in Props.vortexPattern_south) yield return offset + parent.Position;
+                }
+                else if (rot == Rot4.East)
+                {
+                    foreach (IntVec3 offset in Props.vortexPattern_east) yield return offset + parent.Position;
+                }
+                else if (rot == Rot4.West)
+                {
+                    foreach (IntVec3 offset in Props.vortexPattern_west) yield return offset + parent.Position;
+                }
+                
             }
         }
 
@@ -247,7 +265,15 @@ private void DoUnstableVortex()
         {
             List<Thing> excludedThings = new List<Thing> { parent };
             List<ThingDef> destroySpecial = new List<ThingDef>();
-            foreach (IntVec3 pos in Props.vortexPattern)
+            
+            List<IntVec3> vortexPattern = new List<IntVec3>();
+            Rot4 rot = parent.Rotation;
+            if (rot == Rot4.North) vortexPattern = Props.vortexPattern_north;
+            if (rot == Rot4.South) vortexPattern = Props.vortexPattern_south;
+            if (rot == Rot4.East) vortexPattern = Props.vortexPattern_east;
+            if (rot == Rot4.West) vortexPattern = Props.vortexPattern_west;
+            
+            foreach (IntVec3 pos in vortexPattern)
             {
                 foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
                 {
@@ -265,7 +291,7 @@ private void DoUnstableVortex()
                 }
             }
 
-            foreach (IntVec3 pos in Props.vortexPattern)
+            foreach (IntVec3 pos in vortexPattern)
             {
                 DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
 
@@ -317,12 +343,12 @@ private void DoUnstableVortex()
             if (IrisIsActivated)
                 StargateIris.Draw(
                     parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f),
-                    Rot4.North, parent);
+                    parent.Rotation, parent);
 
             if (StargateIsActive)
                 StargatePuddle.Draw(
                     parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f),
-                    Rot4.North, parent);
+                    parent.Rotation, parent);
         }
 
         public override void CompTick()
@@ -650,7 +676,7 @@ private void DoUnstableVortex()
         public string irisTexture;
         public Vector2 puddleDrawSize;
 
-        public List<IntVec3> vortexPattern = new List<IntVec3>
+        public List<IntVec3> vortexPattern_north = new List<IntVec3>
         {
             new IntVec3(0, 0, 1),
             new IntVec3(1, 0, 1),
@@ -666,6 +692,66 @@ private void DoUnstableVortex()
             new IntVec3(-1, 0, -2),
             new IntVec3(0, 0, -3)
         };
+        
+        public List<IntVec3> vortexPattern_south = new List<IntVec3>
+        {
+            new IntVec3(0, 0, -1),
+            new IntVec3(1, 0, -1),
+            new IntVec3(-1, 0, -1),
+            new IntVec3(0, 0, 0),
+            new IntVec3(1, 0, 0),
+            new IntVec3(-1, 0, 0),
+            new IntVec3(0, 0, 1),
+            new IntVec3(1, 0, 1),
+            new IntVec3(-1, 0, 1),
+            new IntVec3(0, 0, 2),
+            new IntVec3(1, 0, 2),
+            new IntVec3(-1, 0, 2),
+            new IntVec3(0, 0, 3)
+        };
+        
+        public List<IntVec3> vortexPattern_east = new List<IntVec3>
+        {
+            new IntVec3(1, 0, 0),
+            new IntVec3(1, 0, 1),
+            new IntVec3(1, 0, -1),
+            
+            new IntVec3(0, 0, 0),
+            new IntVec3(0, 0, 1),
+            new IntVec3(0, 0, -1),
+            
+            new IntVec3(-1, 0, 0),
+            new IntVec3(-1, 0, 1),
+            new IntVec3(-1, 0, -1),
+            
+            new IntVec3(-2, 0, 0),
+            new IntVec3(-2, 0, 1), 
+            new IntVec3(-2, 0, -1),
+            
+            new IntVec3(-3, 0, 0)
+        };
+        
+        public List<IntVec3> vortexPattern_west = new List<IntVec3>
+        {
+            new IntVec3(-1, 0, 0),
+            new IntVec3(-1, 0, 1),
+            new IntVec3(-1, 0, -1),
+            
+            new IntVec3(0, 0, 0),
+            new IntVec3(0, 0, 1),
+            new IntVec3(0, 0, -1),
+            
+            new IntVec3(1, 0, 0),
+            new IntVec3(1, 0, 1),
+            new IntVec3(1, 0, -1),
+            
+            new IntVec3(2, 0, 0),
+            new IntVec3(2, 0, 1), 
+            new IntVec3(2, 0, -1),
+            
+            new IntVec3(3, 0, 0)
+        };
+
     }
 }
 

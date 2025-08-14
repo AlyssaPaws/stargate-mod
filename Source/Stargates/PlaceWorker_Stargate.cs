@@ -18,7 +18,14 @@ namespace StargatesMod
             {
                 if (!(props is CompProperties_Stargate sgProps)) continue;
                 List<IntVec3> pattern = new List<IntVec3>();
-                foreach (IntVec3 vec in sgProps.vortexPattern)
+
+                List<IntVec3> vortexPattern = new List<IntVec3>();
+                if (rot == Rot4.North) vortexPattern = sgProps.vortexPattern_north;
+                if (rot == Rot4.South) vortexPattern = sgProps.vortexPattern_south;
+                if (rot == Rot4.East) vortexPattern = sgProps.vortexPattern_east;
+                if (rot == Rot4.West) vortexPattern = sgProps.vortexPattern_west;
+                
+                foreach (IntVec3 vec in vortexPattern)
                 {
                     pattern.Add(center + vec);
                 }
