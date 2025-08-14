@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-
+	<!--Mod name-->
+	<StargatesMod>Stargates!</StargatesMod>
+	
+	<!--Individual words-->
 	<Incoming>incoming</Incoming>
 	<Outgoing>outgoing</Outgoing>
 	<IrisClosed>CLOSED</IrisClosed>
 	<IrisOpen>OPEN</IrisOpen>
 	
-	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
-	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
+	<!--Notification message text-->
+	<PocketMapDisallowed>Pocket maps do not support stargate addresses.</PocketMapDisallowed>
+	<GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</GateDialFailed>
 	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
 	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
 	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
 	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
+	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
+	<SGM_CannotDialHibernating>Cannot dial: gate is hibernating</SGM_CannotDialHibernating>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
-	<BlockedByLandmark>Not allowed on landmarks.</BlockedByLandmark>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
 	
+	<!--InspectString text-->
+	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
+	<!--Gizmo labels and descriptions-->
+	<SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
+	<SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
 	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
 	<CloseStargate>Close stargate</CloseStargate>
@@ -32,11 +42,25 @@
 	<RenameGateSite>Rename stargate site</RenameGateSite>
 	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
 	
+	<!--FloatMenu labels-->
 	<EnterStargateAction>Enter stargate</EnterStargateAction>
 	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
 	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
+	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>
 	
+	<!--Misc-->
+	<GeneratingStargateSite>Generating stargate site</GeneratingStargateSite>
+	
+	<!-- == Settings keys == -->
+	<!--Settings Categories-->
+	<SettingsCat_Main>Options</SettingsCat_Main>
+	
+	<!--Settings labels and tooltips-->
+	<!--.....-->
+	
+	<!--Toggleable patches notice-->
+	<ToggleablePatchesHeader>Optional Patches</ToggleablePatchesHeader>
+	<ToggleablePatchesText>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</ToggleablePatchesText>
 </LanguageData>

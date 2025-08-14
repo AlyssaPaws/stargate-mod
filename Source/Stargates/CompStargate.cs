@@ -22,6 +22,7 @@ namespace StargatesMod
         public PlanetTile GateAddress;
         public bool StargateIsActive;
         public bool IsReceivingGate;
+        public bool IsHibernating;
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
         public bool IrisIsActivated = false;
@@ -70,36 +71,59 @@ namespace StargatesMod
         }
 
         public void OpenStargate(PlanetTile address)
+         {
+            MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
+            if (!connectedMap.HasMap)
+            {
+                if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMap}");
+                
+                LongEventHandler.QueueLongEvent(delegate
+                {
+                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, null);
+                }, "GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
+                {
+                    if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished generating map");
+
+                    FinishDiallingStargate(address);
+                }); 
+            }
+            else
+            {
+                FinishDiallingStargate(address);
+            }
+         }
+
+
+        private void FinishDiallingStargate(PlanetTile address)
         {
-            Thing gate = GetDialledStargate(address);
-            if (address > -1 && (gate == null || gate.TryGetComp<CompStargate>().StargateIsActive))
+            Thing connectedGate = GetStargateOnMap(address);
+
+            if (address > -1 && (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive))
             {
                 Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
                 SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
                 return;
             }
-
             StargateIsActive = true;
             _connectedAddress = address;
 
-            if (_connectedAddress != -1)
+            if (_connectedAddress > -1)
             {
-                _connectedStargate = GetDialledStargate(_connectedAddress);
+                _connectedStargate = connectedGate;
                 CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
                 sgComp.StargateIsActive = true;
                 sgComp.IsReceivingGate = true;
                 sgComp._connectedAddress = GateAddress;
                 sgComp._connectedStargate = parent;
 
-                sgComp._puddleSustainer =
-                    SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(sgComp.parent));
+                sgComp._puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(sgComp.parent));
                 SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(sgComp.parent));
 
                 CompGlower otherGlowComp = sgComp.parent.GetComp<CompGlower>();
                 otherGlowComp.Props.glowRadius = glowRadius;
                 otherGlowComp.PostSpawnSetup(false);
             }
-
+            
             _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(parent));
 
@@ -108,7 +132,7 @@ namespace StargatesMod
             glowComp.PostSpawnSetup(false);
             if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished opening gate {parent}");
         }
-
+        
         public void CloseStargate(bool closeOtherGate)
         {
             CompTransporter transComp = parent.GetComp<CompTransporter>();
@@ -126,8 +150,7 @@ namespace StargatesMod
             {
                 sgComp = _connectedStargate.TryGetComp<CompStargate>();
                 if (_connectedStargate == null || sgComp == null)
-                    Log.Warning(
-                        $"Recieving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
+                    Log.Warning($"Recieving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
                 else
                     sgComp.CloseStargate(false);
             }
@@ -146,8 +169,7 @@ namespace StargatesMod
             {
                 CompExplosive explosive = parent.TryGetComp<CompExplosive>();
                 if (explosive == null)
-                    Log.Warning(
-                        $"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
+                    Log.Warning($"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
                 else explosive.StartWick();
             }
 
@@ -166,51 +188,40 @@ namespace StargatesMod
             Thing gateOnMap = null;
             foreach (Thing thing in map.listerThings.AllThings)
             {
+                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate) && !thing.TryGetComp<CompStargate>().IsHibernating)
+                {
+                    gateOnMap = thing;
+                    break;
+                }
+            }
+            return gateOnMap;
+        }
+        
+        public static Thing GetStargateOnMap(PlanetTile address, Thing thingToIgnore = null)
+        {
+            Thing gateOnMap = null;
+            Map map = Find.WorldObjects.MapParentAt(address).Map;
+            
+            foreach (Thing thing in map.listerThings.AllThings)
+            {
                 if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
                 {
                     gateOnMap = thing;
                     break;
                 }
             }
-
             return gateOnMap;
-        }
-
+         }
+        
         public static string GetStargateDesignation(PlanetTile address)
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
             Rand.PushState(address.tileId);
-            //pattern: P(num)(char)-(num)(num)(num)
-            string designation =
-                $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
+            //pattern: (pLDesignation)(num)(char)-(num)(num)(num)
+            string pLDesignation = address.Layer.Def.isSpace ? "O" : "P"; //Planet layer designation: O for orbit / space, P for planetary / other
+            string designation = $"{pLDesignation}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
             Rand.PopState();
             return designation;
-        }
-
-        private Thing GetDialledStargate(PlanetTile address)
-        {
-            if (address < 0) return null;
-            MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
-            if (connectedMap == null)
-            {
-                Log.Error($"Tried to get a paired stargate at address {address} but the map parent does not exist!");
-                return null;
-            }
-
-            if (!connectedMap.HasMap)
-            {
-                if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMap}");
-                GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile,
-                    connectedMap is WorldObject_PermSGSite
-                        ? new IntVec3(75, 1, 75)
-                        : Find.World.info.initialMapSize, null);
-                if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished generating map");
-            }
-
-            Map map = connectedMap.Map;
-            Thing gate = GetStargateOnMap(map);
-
-            return gate;
         }
 
         private void PlayTeleportSound()
@@ -245,6 +256,16 @@ namespace StargatesMod
             }
         }
 
+        private void ReInitGate()
+        {
+            if (GetStargateOnMap(parent.Map, parent) != null) return;
+            GateAddress = parent.Map.Tile;
+            Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+            IsHibernating = false;
+
+            SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
+        }
+        
         public void AddToSendBuffer(Thing thing)
         {
             _sendBuffer.Add(thing);
@@ -370,13 +391,19 @@ namespace StargatesMod
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            GateAddress = parent.Map.Tile;
-            Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+            if (GetStargateOnMap(parent.Map, parent) == null)
+            {
+                GateAddress = parent.Map.Tile;
+                Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
+                IsHibernating = false;
+            }
+            else IsHibernating = true;
+
 
             if (StargateIsActive)
             {
                 if (_connectedStargate == null && _connectedAddress != -1)
-                    _connectedStargate = GetDialledStargate(_connectedAddress);
+                    _connectedStargate = GetStargateOnMap(_connectedAddress);
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
 
@@ -392,7 +419,9 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(GateAddress)));
+            sb.AppendLine(!IsHibernating
+                ? "SGM_GateAddress".Translate(GetStargateDesignation(GateAddress))
+                : "SGM_GateHibernating".Translate());
             if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             if (StargateIsActive)
@@ -427,6 +456,19 @@ namespace StargatesMod
                 yield return command;
             }
 
+            if (IsHibernating)
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "SGM_WakeHibernation".Translate(),
+                    defaultDesc = "SGM_WakeHibernationDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
+                    action = ReInitGate
+                };
+                if (GetStargateOnMap(parent.Map, parent) != null) command.Disable("SGM_CannotWake".Translate());
+                yield return command;
+            } 
+            
             if (Prefs.DevMode)
             {
                 Command_Action command = new Command_Action
@@ -478,6 +520,7 @@ namespace StargatesMod
             Scribe_Values.Look(ref HasIris, "HasIris");
             Scribe_Values.Look(ref IrisIsActivated, "IrisIsActivated");
             Scribe_Values.Look(ref TicksSinceOpened, "TicksSinceOpened");
+            Scribe_Values.Look(ref IsHibernating, "IsHibernating");
             Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
             Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
             Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);

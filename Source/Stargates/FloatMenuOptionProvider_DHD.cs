@@ -37,6 +37,11 @@ namespace StargatesMod
                     yield break;
                 }
             }
+            if (sgComp.IsHibernating)
+            {
+                yield return new FloatMenuOption("SGM_CannotDialHibernating".Translate(), null);
+                yield break;
+            }
             if (sgComp.StargateIsActive)
             {
                 yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
