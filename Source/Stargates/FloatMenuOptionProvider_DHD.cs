@@ -75,24 +75,31 @@ namespace StargatesMod
 
                 string siteLabel = "placeHolder";
 
+                MenuOptionPriority priority = MenuOptionPriority.Default;
+
                 /*Account for the destination address being a non-site, e.g. player colony*/
                 if (sgDestSite != null)
                 {
                     siteLabel = sgDestSite.Label;
                 }
-                else if (sgDestNonSite != null) siteLabel = sgDestNonSite.Label;
+                else if (sgDestNonSite != null)
+                {
+                    siteLabel = sgDestNonSite.Label;
+
+                    if (sgDestNonSite.Map.IsPlayerHome) priority = MenuOptionPriority.High;
+                }
                 else
                 {
                     Log.Error($"StargatesMod: Site and MapParent both were null in FloatMenuOptionProvider_DHD");
                 }
-                
                 
                 yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), siteLabel), () =>
                 {
                     dhdComp.lastDialledAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
+                    
+                }, priority );
             }
         }
 
