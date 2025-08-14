@@ -11,6 +11,10 @@ namespace StargatesMod
             DefOfHelper.EnsureInitializedInCtor(typeof(SoundDefOf));
         }
 
+        public static SoundDef StargateMod_RingUsualStart;
+
+        public static SoundDef StargateMod_DhdUsual_1;
+
         public static SoundDef StargateMod_SGOpen;
         public static SoundDef StargateMod_SGFailDial;
 
@@ -20,5 +24,7 @@ namespace StargatesMod
         public static SoundDef StargateMod_IrisOpen;
         public static SoundDef StargateMod_IrisClose;
         public static SoundDef StargateMod_IrisHit;
+
+        public static SoundDef StargateMod_Steam;
     }
 }
