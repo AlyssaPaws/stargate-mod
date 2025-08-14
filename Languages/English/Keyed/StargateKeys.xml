@@ -11,11 +11,14 @@
 	<SGM.Missing>Missing</SGM.Missing>
 	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
 	
+    <!-- TODO Change instances of '_' to '.' including in usages of relevant langKeys -->
+    
 	<!--Notification message text-->
 	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
 	<SGM.GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM.GateDialFailed>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
 	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
+    <SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
@@ -28,18 +31,24 @@
     <SGM.RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM.RespawnGateString>
 	
 	<!--Gizmo labels and descriptions-->
-	<SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
-	<SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
-	<SGM.CloseStargate>Close stargate</SGM.CloseStargate>
-	<SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
-	<SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
-	<SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
-	<SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
-	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
-    <SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
-    <SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
-    <SGM.CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM.CannotCloseIncoming>
-    <SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
+	<SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
+	<SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
+    <SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
+    <SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
+    <SGM.CloseStargate>Close stargate</SGM.CloseStargate>
+    <SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
+    <SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
+    <SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
+    <SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
+    <SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+	<SGM_TransmitGDO>Transmit GDO code</SGM_TransmitGDO>
+	<SGM_TransmitGDODesc>Transmit an identification code through the gate, identifying yourself as friendlies and opening the iris on your stargate.</SGM_TransmitGDODesc>
+	<SGM_SelectConnectedGate>View connected gate</SGM_SelectConnectedGate>
+	<SGM_SelectConnectedGateDesc>View and select the gate on the other side.</SGM_SelectConnectedGateDesc>
+	
+	<!--Gizmo disabled messages-->
+	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
+	<SGM_CannotGDO>Iris is already open.</SGM_CannotGDO>
 	
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>
@@ -72,6 +81,4 @@
 	<!--Toggleable patches notice-->
 	<ToggleablePatchesHeader>Optional Patches</ToggleablePatchesHeader>
 	<ToggleablePatchesText>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</ToggleablePatchesText>
-
-
 </LanguageData>
