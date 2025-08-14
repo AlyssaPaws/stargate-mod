@@ -38,7 +38,7 @@ namespace StargatesMod
             }
             if (sgComp.IsHibernating)
             {
-                yield return new FloatMenuOption("SGM_CannotDialHibernating".Translate(), null);
+                yield return new FloatMenuOption("SGM.CannotDialHibernating".Translate(), null);
                 yield break;
             }
             if (sgComp.StargateIsActive)
@@ -83,7 +83,8 @@ namespace StargatesMod
                     dhdComp.lastDialledAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
+                    
+                });// TODO Priority?
             }
         }
 
