@@ -22,6 +22,7 @@
 	<SGM_CannotDialHibernating>Cannot dial: gate is hibernating</SGM_CannotDialHibernating>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
+	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
 	
 	<!--InspectString text-->
 	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
@@ -41,6 +42,14 @@
 	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
 	<RenameGateSite>Rename stargate site</RenameGateSite>
 	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
+	<SGM_TransmitGDO>Transmit GDO code</SGM_TransmitGDO>
+	<SGM_TransmitGDODesc>Transmit an identification code through the gate, identifying yourself as friendlies and opening the iris on your stargate.</SGM_TransmitGDODesc>
+	<SGM_SelectConnectedGate>View connected gate</SGM_SelectConnectedGate>
+	<SGM_SelectConnectedGateDesc>View and select the gate on the other side.</SGM_SelectConnectedGateDesc>
+	
+	<!--Gizmo disabled messages-->
+	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
+	<SGM_CannotGDO>Iris is already open.</SGM_CannotGDO>
 	
 	<!--FloatMenu labels-->
 	<EnterStargateAction>Enter stargate</EnterStargateAction>

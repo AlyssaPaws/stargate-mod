@@ -209,7 +209,7 @@ namespace StargatesMod
             
             foreach (Thing thing in map.listerThings.AllThings)
             {
-                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
+                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate) && !thing.TryGetComp<CompStargate>().IsHibernating)
                 {
                     gateOnMap = thing;
                     break;
@@ -231,8 +231,16 @@ namespace StargatesMod
 
         private void PlayTeleportSound()
         {
-            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}")
-                .PlayOneShot(SoundInfo.InMap(parent));
+            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}").PlayOneShot(SoundInfo.InMap(parent));
+        }
+
+        public void ChangeIrisState(bool checkValid = false)
+        {
+            if (checkValid && (!Props.canHaveIris || !HasIris)) return;
+            IrisIsActivated = !IrisIsActivated;
+            
+            if (IrisIsActivated) SGSoundDefOf.StargateMod_IrisOpen.PlayOneShot(SoundInfo.InMap(parent));
+            else SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
         }
 
 private void DoUnstableVortex()
@@ -484,6 +492,22 @@ private void DoUnstableVortex()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) yield return gizmo;
 
+            // Gizmo to select connected gate
+            if (StargateIsActive && _connectedAddress > -1)
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "SGM_SelectConnectedGate".Translate(),
+                    defaultDesc = "SGM_SelectConnectedGateDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
+                    action = delegate
+                    {
+                        CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_connectedStargate));
+                    }
+                };
+                yield return command;
+            }
+            
             if (Props.canHaveIris && HasIris)
             {
                 Command_Action command = new Command_Action
@@ -493,14 +517,37 @@ private void DoUnstableVortex()
                     icon = ContentFinder<Texture2D>.Get(Props.irisTexture),
                     action = delegate
                     {
-                        IrisIsActivated = !IrisIsActivated;
-                        if (IrisIsActivated) SGSoundDefOf.StargateMod_IrisOpen.PlayOneShot(SoundInfo.InMap(parent));
-                        else SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
+                        ChangeIrisState();
                     }
                 };
                 yield return command;
             }
-
+            
+            // Remotely open Iris of gate on the other side if closed
+            if (!IsReceivingGate && Faction.OfPlayer.def.techLevel >= TechLevel.Industrial)
+            {
+                CompStargate connectedSGComp = _connectedStargate.TryGetComp<CompStargate>();
+                
+                if (connectedSGComp != null && _connectedStargate.Faction == Faction.OfPlayer
+                    && connectedSGComp.Props.canHaveIris && connectedSGComp.HasIris)
+                {
+                    Command_Action command = new Command_Action
+                    {
+                        defaultLabel = "SGM_TransmitGDO".Translate(),
+                        defaultDesc = "SGM_TransmitGDODesc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateTransmitGDO"),
+                        action = delegate
+                        {
+                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_connectedStargate));
+                            connectedSGComp.ChangeIrisState();
+                        }
+                    };
+                    if (!connectedSGComp.IrisIsActivated) command.Disable("SGM_CannotGDO".Translate());
+                    yield return command;
+                }
+            }
+            
+            // Gizmo to activate gate if hibernating
             if (IsHibernating)
             {
                 Command_Action command = new Command_Action
@@ -512,9 +559,9 @@ private void DoUnstableVortex()
                 };
                 if (GetStargateOnMap(parent.Map, parent) != null) command.Disable("SGM_CannotWake".Translate());
                 yield return command;
-            } 
+            }
             
-            if (Prefs.DevMode)
+            if (Prefs.DevMode && Props.canHaveIris)
             {
                 Command_Action command = new Command_Action
                 {
