@@ -17,7 +17,14 @@ namespace StargatesMod
         public CompStargate GetLinkedStargate()
         {
             if (Props.selfDialler) return parent.TryGetComp<CompStargate>(); 
-            if (compFacility.LinkedBuildings.Count == 0)  return null; 
+            if (compFacility.LinkedBuildings.Count == 0)  return null;
+            if (compFacility.LinkedBuildings.Count > 1)
+            {
+                foreach (Thing t in compFacility.LinkedBuildings)
+                {
+                    if (!t.TryGetComp<CompStargate>().IsHibernating) return t.TryGetComp<CompStargate>();
+                }
+            }
             return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
