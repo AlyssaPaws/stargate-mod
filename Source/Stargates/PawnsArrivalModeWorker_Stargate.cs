@@ -1,18 +1,23 @@
 ﻿using RimWorld;
-using Verse;
 using System.Collections.Generic;
+using StargatesMod.Mod_Settings;
+using Verse;
 
 namespace StargatesMod
 {
     public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     {
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
+        
         public override void Arrive(List<Pawn> pawns, IncidentParms parms)
         {
             Map map = (Map)parms.target;
             Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
 
             CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
-            sgComp.OpenStargateDelayed(-1, 450);
+            int lockDelay = 900;
+            if (_settings.ShortenGateDialSeq) lockDelay = 450;
+            sgComp.OpenStargateDelayed(-1, lockDelay);
             sgComp.TicksSinceBufferUnloaded = -150;
             sgComp.IsReceivingGate = true;
             

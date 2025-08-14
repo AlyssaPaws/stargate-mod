@@ -1,13 +1,16 @@
-﻿using Verse;
+﻿using System.Collections.Generic;
+using StargatesMod.Mod_Settings;
+using Verse;
 using Verse.AI;
-using System.Collections.Generic;
+using Verse.Sound;
 
 namespace StargatesMod
 {
     public class JobDriver_DialStargate : JobDriver
     {
         private const TargetIndex targetDHD = TargetIndex.A;
-        private const int openDelayTicks = 200;
+        
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -26,7 +29,10 @@ namespace StargatesMod
                 initAction = () =>
                 {
                     CompStargate linkedStargate = dhdComp.GetLinkedStargateComp();
-                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, openDelayTicks);
+                    int lockDelay = 900;
+                    if (_settings.ShortenGateDialSeq) lockDelay = 200;
+                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, lockDelay);
+                    if (!dhdComp.Props.selfDialler) SGSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
                 }
             };
         }

@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using StargatesMod.Mod_Settings;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -25,6 +26,8 @@ namespace StargatesMod
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
         public bool IrisIsActivated = false;
+        private int _prevRingSoundQueue = 0;
+        private int _chevronSoundCounter = 0;
         PlanetTile _queuedAddress;
         PlanetTile _connectedAddress = -1;
         Thing _connectedStargate;
@@ -33,6 +36,8 @@ namespace StargatesMod
         private Graphic _stargatePuddle;
         private Graphic _stargateIris;
 
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
+        
         public CompProperties_Stargate Props => (CompProperties_Stargate)props;
 
         Graphic StargatePuddle =>
@@ -325,12 +330,33 @@ namespace StargatesMod
             base.CompTick();
             if (TicksUntilOpen > 0)
             {
+                if (!_settings.ShortenGateDialSeq)
+                {
+                    if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
+                    {
+                        SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+                        _prevRingSoundQueue = TicksUntilOpen;
+                    }
+
+                    if (TicksUntilOpen == _prevRingSoundQueue - 240 && _chevronSoundCounter < 3)
+                    {
+                        DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{_chevronSoundCounter + 1}")
+                            .PlayOneShot(SoundInfo.InMap(parent));
+                        _chevronSoundCounter++;
+                    }
+                }
+                else if (TicksUntilOpen == 200)
+                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+
                 TicksUntilOpen--;
                 if (TicksUntilOpen == 0)
                 {
                     TicksUntilOpen = -1;
                     OpenStargate(_queuedAddress);
                     _queuedAddress = -1;
+
+                    _prevRingSoundQueue = 0;
+                    _chevronSoundCounter = 0;
                 }
             }
 
