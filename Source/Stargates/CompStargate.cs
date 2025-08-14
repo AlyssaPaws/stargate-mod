@@ -311,8 +311,10 @@ namespace StargatesMod
                     pawn.health.RemoveHediff(hediff);
                 }
             }
-                    
-            if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill();
+            
+            DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+
+            if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
             
             if (!isRecvBuffer) _sendBuffer.Remove(thingToDestroy);
             else
