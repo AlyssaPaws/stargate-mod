@@ -263,8 +263,8 @@ namespace StargatesMod
             {
                 foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
                 {
-                    // Stop vortex from destroying anything in the vortex cells behind the gate, most important for walls of pressurized rooms in orbital locations
-                    if (pos == new IntVec3(0, 0, 1) || pos == new IntVec3(1, 0, 1) || pos == new IntVec3(-1, 0, 1)) 
+                    // Stop vortex from destroying walls in the vortex cells behind the gate, otherwise it will breach the gateroom of orbital gate sites
+                    if ((pos == new IntVec3(0, 0, 1) || pos == new IntVec3(1, 0, 1) || pos == new IntVec3(-1, 0, 1)) && thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Impassable) 
                         excludedThings.Add(thing);
                     
                     // TODO ADD
