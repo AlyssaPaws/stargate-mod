@@ -37,7 +37,7 @@ namespace StargatesMod
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
             /*Pocket Maps do not have an associated PlanetTile, so no gate address, so stargates cannot work on them*/
-            if(map.IsPocketMap) return new AcceptanceReport("SGM_PocketMapDisallowed".Translate());
+            if(map.IsPocketMap) return new AcceptanceReport("PocketMapDisallowed".Translate());
 
 			return true;
 		}

@@ -509,8 +509,8 @@ private void DoUnstableVortex()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(!IsHibernating
-                ? "SGM_GateAddress".Translate(GetStargateDesignation(GateAddress))
-                : "SGM_GateHibernating".Translate());
+                ? "GateAddress".Translate(GetStargateDesignation(GateAddress))
+                : "GateHibernating".Translate());
             if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             if (StargateIsActive)
@@ -533,8 +533,8 @@ private void DoUnstableVortex()
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "SGM_SelectConnectedGate".Translate(),
-                    defaultDesc = "SGM_SelectConnectedGateDesc".Translate(),
+                    defaultLabel = "SelectConnectedGate".Translate(),
+                    defaultDesc = "SelectConnectedGateDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
                     action = delegate
                     {
@@ -569,8 +569,8 @@ private void DoUnstableVortex()
                 {
                     Command_Action command = new Command_Action
                     {
-                        defaultLabel = "SGM_TransmitGDO".Translate(),
-                        defaultDesc = "SGM_TransmitGDODesc".Translate(),
+                        defaultLabel = "TransmitGDO".Translate(),
+                        defaultDesc = "TransmitGDODesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateTransmitGDO"),
                         action = delegate
                         {
@@ -578,7 +578,7 @@ private void DoUnstableVortex()
                             connectedSGComp.ChangeIrisState();
                         }
                     };
-                    if (!connectedSGComp.IrisIsActivated) command.Disable("SGM_CannotGDO".Translate());
+                    if (!connectedSGComp.IrisIsActivated) command.Disable("CannotGDO".Translate());
                     yield return command;
                 }
             }
@@ -588,12 +588,12 @@ private void DoUnstableVortex()
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "SGM_WakeHibernation".Translate(),
-                    defaultDesc = "SGM_WakeHibernationDesc".Translate(),
+                    defaultLabel = "WakeHibernation".Translate(),
+                    defaultDesc = "WakeHibernationDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
                     action = ReInitGate
                 };
-                if (GetStargateOnMap(parent.Map, parent) != null) command.Disable("SGM_CannotWake".Translate());
+                if (GetStargateOnMap(parent.Map, parent) != null) command.Disable("CannotWake".Translate());
                 yield return command;
             }
             

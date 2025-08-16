@@ -26,7 +26,7 @@ namespace StargatesMod.Mod_Settings
             Listing_Standard sec1 = listingStandard.BeginSection(150);
             sec1.Label("SGM_SettingsCat_Main".Translate());
             sec1.GapLine();
-            sec1.CheckboxLabeled("SGM_ShortenDialSeqLabel".Translate(), ref _settings.ShortenGateDialSeq, "SGM_ShortenDialSeqTT".Translate());
+            sec1.CheckboxLabeled("ShortenDialSeqLabel".Translate(), ref _settings.ShortenGateDialSeq, "ShortenDialSeqTT".Translate());
             /*sec1.Label("Setting2");
             sec1.Label("Setting3");
             sec1.Label("Setting4");*/

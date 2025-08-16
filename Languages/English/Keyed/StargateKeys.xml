@@ -19,21 +19,21 @@
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
 	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
-	<SGM_CannotDialHibernating>Cannot dial: gate is hibernating</SGM_CannotDialHibernating>
+	<CannotDialHibernating>Cannot dial: gate is hibernating</CannotDialHibernating>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
-	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
+	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
 	
 	<!--InspectString text-->
-	<SGM_GateHibernating>Address conflict: Gate in hibernation mode.</SGM_GateHibernating>
+	<GateHibernating>Address conflict: Gate in hibernation mode.</GateHibernating>
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
 	<!--Gizmo labels and descriptions-->
-	<SGM_WakeHibernation>Wake from hibernation</SGM_WakeHibernation>
-	<SGM_WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM_WakeHibernationDesc>
+	<WakeHibernation>Wake from hibernation</WakeHibernation>
+	<WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</WakeHibernationDesc>
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
 	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
 	<CloseStargate>Close stargate</CloseStargate>
@@ -42,14 +42,14 @@
 	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
 	<RenameGateSite>Rename stargate site</RenameGateSite>
 	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
-	<SGM_TransmitGDO>Transmit GDO code</SGM_TransmitGDO>
-	<SGM_TransmitGDODesc>Transmit an identification code through the gate, identifying yourself as friendlies and opening the iris on your stargate.</SGM_TransmitGDODesc>
-	<SGM_SelectConnectedGate>View connected gate</SGM_SelectConnectedGate>
-	<SGM_SelectConnectedGateDesc>View and select the gate on the other side.</SGM_SelectConnectedGateDesc>
+	<TransmitGDO>Transmit GDO code</TransmitGDO>
+	<TransmitGDODesc>Transmit an identification code through the gate, identifying yourself as friendlies and opening the iris on your stargate.</TransmitGDODesc>
+	<SelectConnectedGate>View connected gate</SelectConnectedGate>
+	<SelectConnectedGateDesc>View and select the gate on the other side.</SelectConnectedGateDesc>
 	
 	<!--Gizmo disabled messages-->
-	<SGM_CannotWake>Cannot wake gate: Active gate already present.</SGM_CannotWake>
-	<SGM_CannotGDO>Iris is already open.</SGM_CannotGDO>
+	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
+	<CannotGDO>Iris is already open.</CannotGDO>
 	
 	<!--FloatMenu labels-->
 	<EnterStargateAction>Enter stargate</EnterStargateAction>
