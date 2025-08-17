@@ -15,6 +15,8 @@
 	<SGM.GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</SGM.GateDialFailed>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
 	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
+    <SGM.StargateEnterBlockedSize>Vehicle entry blocked: Can not fit through the gate.</SGM.StargateEnterBlockedSize>
+    <SGM.StargateEnterBlockedType>Vehicle entry blocked: Vehicle type is not allowed.</SGM.StargateEnterBlockedType>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>

@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using Verse.AI;
+using Vehicles;
 
 namespace StargatesMod
 {
@@ -267,6 +269,74 @@ namespace StargatesMod
             }
         }
         
+        //TODO integrate with WormholeContentDisposal
+        private bool VehicleVortexDestruction(Thing thing)
+        {
+            DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 
+                99999f, 999f);
+            
+            if (thing as Pawn is VehiclePawn)
+            {
+                VehiclePawn vP = thing as VehiclePawn;
+                if (vP?.AllPawnsAboard != null)
+                {
+                    foreach (Pawn p in vP.AllPawnsAboard.ToList())
+                    {
+                        vP.RemovePawn(p);
+                        p.Kill(disintDeathInfo);
+                        p.Corpse.Kill();
+                    }
+                }
+                if (!vP.DestroyedOrNull()) vP?.Destroy();
+
+                return true;
+            }
+            return false;
+        }
+
+        private bool ExpelVehicle(Thing thing)
+        {
+            if (thing as Pawn is VehiclePawn)
+            {
+                GenSpawn.Spawn(thing, parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
+                return true;
+            }
+
+            return false;
+            
+        }
+
+        private void SendVehicle(Thing thing)
+        {
+            if (thing as Pawn is VehiclePawn)
+            {
+                VehiclePawn vP = thing as VehiclePawn;
+                                
+                /*Check if vehicle is of tge land variety and of reasonable size*/
+                bool vehTypeValid = vP?.VehicleDef.type == VehicleType.Land;
+                bool vehSizeValid = (vP?.VehicleDef.size.x <= 3 && vP.VehicleDef.size.z <= 5);
+                if (vehTypeValid && vehSizeValid) 
+                {
+                    if (thing.Spawned) thing.DeSpawn();
+                    AddToSendBuffer(thing);
+                    PlayTeleportSound();
+                }
+                else
+                {
+                    if (!vehTypeValid)
+                    {
+                        string rejectMsgType= "StargateEnterBlockedType".Translate();
+                        Messages.Message(rejectMsgType, MessageTypeDefOf.RejectInput);
+                    }
+                    if (!vehSizeValid && vehTypeValid)
+                    {
+                        string rejectMsgSize = "StargateEnterBlockedSize".Translate();
+                        Messages.Message(rejectMsgSize, MessageTypeDefOf.RejectInput);
+                    }
+                }
+            }
+        }
+        
         #region Comp Overrides
 
         public override void PostDraw()
@@ -330,7 +400,16 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
-                    GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+                    /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework"))
+                    {
+                        if (!ExpelVehicle(_recvBuffer[0]))
+                        {
+                            GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+                        }
+                    }
+                    else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
@@ -380,17 +459,12 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("SGM.GateAddress".Translate(GetStargateDesignation(GateAddress)));
-            
-            switch (StargateIsActive)
-            {
-                case false when TicksUntilOpen <= -1:
-                    sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
-                    break;
-                case true:
-                    sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
-                    break;
-            }
+            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(GateAddress)));
+            if (!StargateIsActive && TicksUntilOpen <= -1)
+                sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
+            if (StargateIsActive)
+                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
+                    (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
 
             if (HasIris) sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
             if (TicksUntilOpen > 0) sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
