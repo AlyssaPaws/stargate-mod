@@ -8,6 +8,8 @@ namespace StargatesMod
     {
         public List<PlanetTile> AddressList = new List<PlanetTile>();
 
+        public List<int> PocketMapAddressList = new List<int>();
+
         public WorldComp_StargateAddresses(World world) : base(world) { }
 
         public void RemoveAddress(PlanetTile address)
@@ -20,6 +22,17 @@ namespace StargatesMod
             if (AddressList.Contains(address)) return;
             AddressList.Add(address);
         }
+        
+        public void RemovePocketMapAddress(int mapIndex)
+        {
+            PocketMapAddressList.Remove(mapIndex);
+        }
+
+        public void AddPocketMapAddress(int mapIndex)
+        {
+            if (PocketMapAddressList.Contains(mapIndex)) return;
+            PocketMapAddressList.Add(mapIndex);
+        }
 
         public void CleanupAddresses()
         {
@@ -30,6 +43,13 @@ namespace StargatesMod
 
                 if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && !(sgMap is WorldObject_PermSGSite)))
                     RemoveAddress(pT);
+            }
+
+            foreach (int i in new List<int>(PocketMapAddressList))
+            {
+                Map map = Find.Maps[i];
+                PocketMapParent pMParent = map.PocketMapParent;
+                if (pMParent == null || !pMParent.HasMap) RemovePocketMapAddress(i);
             }
         }
 

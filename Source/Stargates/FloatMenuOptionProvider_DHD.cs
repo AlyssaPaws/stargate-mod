@@ -77,14 +77,37 @@ namespace StargatesMod
                 if (pT == sgComp.GateAddress) continue;
                 
                 MapParent destMapParent = Find.WorldObjects.MapParentAt(pT);
+                MenuOptionPriority priority = MenuOptionPriority.High;
                 
                 yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(pT), destMapParent.Label), () =>
                 {
-                    dhdComp.lastDialledAddress = pT;
+                    dhdComp.queuedAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                     
-                });// TODO Priority?
+                }, priority);// TODO Test?
+            }
+
+            for (var i = 0; i < addressComp.PocketMapAddressList.Count; i++)
+            {
+                var mapIndex = addressComp.PocketMapAddressList[i];
+                if (mapIndex == sgComp.PocketMapGateAddress) continue;
+
+                PocketMapParent pMParent = Find.Maps[mapIndex].PocketMapParent;
+                
+                if (pMParent == null)
+                {
+                    Log.Error($"StargatesMod: PocketMapParent was null in FloatMenuOptionProvider_DHD");
+                    continue;
+                }
+
+                yield return new FloatMenuOption("DialGate".Translate("PM-" + i, pMParent.Map.generatorDef.label), () =>
+                {
+                    dhdComp.queuedPocketMapAddress = mapIndex;
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"),
+                        dhdComp.parent);
+                    context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                });
             }
         }
 

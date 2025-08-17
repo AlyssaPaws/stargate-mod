@@ -24,6 +24,7 @@ namespace StargatesMod
             this.FailOn(() => dhdComp.GetLinkedStargateComp().StargateIsActive);
             
             IntVec3 targetCell = job.GetTarget(targetDHD).Thing.InteractionCell;
+            
             // If self-dialler, make pawn initiate dial from the (left) side instead of the center
             int subX = dhdComp.parent.def.size.x / 2;
             if (dhdComp.Props.selfDialler)
@@ -39,7 +40,18 @@ namespace StargatesMod
                     CompStargate linkedStargate = dhdComp.GetLinkedStargateComp();
                     int lockDelay = 900;
                     if (_settings.ShortenGateDialSeq) lockDelay = 200;
-                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, lockDelay);
+
+                    if (dhdComp.queuedAddress > -1)
+                    {
+                        linkedStargate.OpenStargateDelayed(dhdComp.queuedAddress, lockDelay);
+                        dhdComp.queuedAddress = -1;
+                    }
+                    else
+                    {
+                        linkedStargate.OpenStargateDelayed(dhdComp.queuedPocketMapAddress, lockDelay);
+                        dhdComp.queuedPocketMapAddress = -1;
+                    }
+                    
                     if (!dhdComp.Props.selfDialler) SGSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
                 }
             };
