@@ -96,8 +96,7 @@ namespace StargatesMod
             TicksUntilOpen = delay;
         }
         
-        //Pocket Map
-        public void OpenStargateDelayed(int mapIndex, int delay)
+        public void OpenStargateDelayed(int mapIndex, int delay) //Pocket Map
         {
             _queuedAddressPocketMap = mapIndex;
             TicksUntilOpen = delay;
@@ -134,8 +133,7 @@ namespace StargatesMod
             }
          }
         
-        //Pocket Map
-        public void OpenStargate(int mapIndex)
+        public void OpenStargate(int mapIndex) //Pocket Map
         {
             if (_queuedAddress > -1)
             {
@@ -153,8 +151,7 @@ namespace StargatesMod
 
             if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
             {
-                Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
-                SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
+                DialFail();
                 return;
             }
             StargateIsActive = true;
@@ -192,8 +189,7 @@ namespace StargatesMod
 
             if (address > -1 && (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive))
             {
-                Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
-                SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
+                DialFail();
                 return;
             }
             StargateIsActive = true;
@@ -272,6 +268,16 @@ namespace StargatesMod
             IsReceivingGate = false;
         }
 
+        private void DialFail()
+        {
+            Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
+            SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
+
+            _queuedAddress = -1;
+            _queuedAddressPocketMap = -1;
+            _connectedStargate = null;
+        }
+        
         #endregion
 
         public static Thing GetStargateOnMap(Map map, Thing thingToIgnore = null)
@@ -418,18 +424,42 @@ namespace StargatesMod
             
             if (isHibernatingAlready && !IsHibernating) SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
         }
+
+        private void GateDialTick()
+        {
+            if (!_settings.ShortenGateDialSeq)
+            {
+                if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
+                {
+                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+                    _prevRingSoundQueue = TicksUntilOpen;
+                }
+
+                if (TicksUntilOpen == _prevRingSoundQueue - 240 && _chevronSoundCounter < 3)
+                {
+                    DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{_chevronSoundCounter + 1}")
+                        .PlayOneShot(SoundInfo.InMap(parent));
+                    _chevronSoundCounter++;
+                }
+            }
+            else if (TicksUntilOpen == 200)
+                SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+
+            TicksUntilOpen--;
+            if (TicksUntilOpen == 0)
+            {
+                TicksUntilOpen = -1;
+                if (_queuedAddress <= -1) OpenStargate(_queuedAddressPocketMap);
+                else OpenStargate(_queuedAddress);
+                    
+                _queuedAddress = -1;
+                _queuedAddressPocketMap = -1;
+
+                _prevRingSoundQueue = 0;
+                _chevronSoundCounter = 0;
+            }
+        }
         
-        public void AddToSendBuffer(Thing thing)
-        {
-            _sendBuffer.Add(thing);
-            PlayTeleportSound();
-        }
-
-        public void AddToReceiveBuffer(Thing thing)
-        {
-            _recvBuffer.Add(thing);
-        }
-
         private void WormholeContentDisposal(bool isRecvBuffer)
         {
             Thing thingToDestroy = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
@@ -454,6 +484,17 @@ namespace StargatesMod
             }
         }
         
+        public void AddToSendBuffer(Thing thing)
+        {
+            _sendBuffer.Add(thing);
+            PlayTeleportSound();
+        }
+
+        public void AddToReceiveBuffer(Thing thing)
+        {
+            _recvBuffer.Add(thing);
+        }
+
         #region Comp Overrides
 
         public override void PostDraw()
@@ -473,40 +514,7 @@ namespace StargatesMod
         public override void CompTick()
         {
             base.CompTick();
-            if (TicksUntilOpen > 0)
-            {
-                if (!_settings.ShortenGateDialSeq)
-                {
-                    if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
-                    {
-                        SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
-                        _prevRingSoundQueue = TicksUntilOpen;
-                    }
-
-                    if (TicksUntilOpen == _prevRingSoundQueue - 240 && _chevronSoundCounter < 3)
-                    {
-                        DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{_chevronSoundCounter + 1}")
-                            .PlayOneShot(SoundInfo.InMap(parent));
-                        _chevronSoundCounter++;
-                    }
-                }
-                else if (TicksUntilOpen == 200)
-                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
-
-                TicksUntilOpen--;
-                if (TicksUntilOpen == 0)
-                {
-                    TicksUntilOpen = -1;
-                    if (_queuedAddress <= -1) OpenStargate(_queuedAddressPocketMap);
-                    else OpenStargate(_queuedAddress);
-                    
-                    _queuedAddress = -1;
-                    _queuedAddressPocketMap = -1;
-
-                    _prevRingSoundQueue = 0;
-                    _chevronSoundCounter = 0;
-                }
-            }
+            if (TicksUntilOpen > 0) GateDialTick();
 
             if (!StargateIsActive) return;
             if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
@@ -575,16 +583,12 @@ namespace StargatesMod
             if (sgComp.IsInPocketMap)
             {
                 if (_connectedAddressPocketMap == -1 && !_recvBuffer.Any())
-                {
                     CloseStargate(false);
-                }
             }
             else
             {
                 if (_connectedAddress == -1 && !_recvBuffer.Any())
-                {
                     CloseStargate(false);
-                }
             }
 
             TicksSinceBufferUnloaded++;
@@ -598,7 +602,7 @@ namespace StargatesMod
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            InitGate();
+            if (!IsHibernating) InitGate();
             
             if (StargateIsActive)
             {
@@ -724,17 +728,24 @@ namespace StargatesMod
 
                 if (_conflictingGate != null)
                 {
-                    Command_Action command2 = new Command_Action
+                    if (GetStargateOnMap(parent.Map, parent) == null)
                     {
-                        defaultLabel = "SelectGateConflict".Translate(),
-                        defaultDesc = "SelectGateConflictDesc".Translate(),
-                        icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
-                        action = delegate
+                        _conflictingGate = null;
+                    }
+                    else
+                    {
+                        Command_Action command2 = new Command_Action
                         {
-                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_conflictingGate));
-                        }
-                    };
-                    yield return command2;
+                            defaultLabel = "SelectGateConflict".Translate(),
+                            defaultDesc = "SelectGateConflictDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
+                            action = delegate
+                            {
+                                CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_conflictingGate));
+                            }
+                        };
+                        yield return command2;
+                    }
                 }
             }
             
