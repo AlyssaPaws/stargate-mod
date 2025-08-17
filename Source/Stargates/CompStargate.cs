@@ -641,13 +641,15 @@ private void DoUnstableVortex()
 
         public string GetInspectString()
         {
+            WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+            
             string displayedAddress = GetStargateDesignation(GateAddress);
-            if (IsInPocketMap) displayedAddress = "PM-" + PocketMapGateAddress;
-
+            if (IsInPocketMap) displayedAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(PocketMapGateAddress);
+            
             string connectedDisplayAddress;
             if (_connectedAddress > -1)
                 connectedDisplayAddress = "" + GetStargateDesignation(_connectedAddress);
-            else connectedDisplayAddress = "PM-" + _connectedAddressPocketMap;
+            else connectedDisplayAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(_connectedAddressPocketMap);
             
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(!IsHibernating

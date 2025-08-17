@@ -111,7 +111,7 @@ namespace StargatesMod
                 
                 if (pMParent == null)
                 {
-                    Log.Error($"StargatesMod: PocketMapParent was null in FloatMenuOptionProvider_DHD");
+                    Log.Error("StargatesMod: PocketMapParent was null in FloatMenuOptionProvider_DHD");
                     continue;
                 }
 
