@@ -23,6 +23,9 @@
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
+	<StargateEnterBlockedSize>Vehicle entry blocked: Can not fit through the gate.</StargateEnterBlockedSize>
+	<StargateEnterBlockedType>Vehicle entry blocked: Vehicle type is not allowed.</StargateEnterBlockedType>
+	
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
 	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
 	<CloseStargate>Close stargate</CloseStargate>

@@ -28,5 +28,6 @@
 	</modDependencies>
 	<loadAfter>
 		<li>oskarpotocki.vanillafactionsexpanded.core</li>
+		<li>smashphil.vehicleframework</li>
 	</loadAfter>
 </ModMetaData>

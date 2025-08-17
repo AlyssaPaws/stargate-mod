@@ -2,11 +2,13 @@
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
 using Verse.AI;
+using Vehicles;
 
 namespace StargatesMod
 {
@@ -272,6 +274,85 @@ namespace StargatesMod
                     Rot4.North, parent);
         }
 
+        private void VortexKillPawn(Thing thing)
+        {
+            if (thing is Pawn pawn)
+            {
+                DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 
+                    99999f, 999f);
+                
+                pawn.Kill(disintDeathInfo);
+                pawn.Corpse.Kill();
+            }
+        }
+        
+        private bool VehicleVortexDestruction(Thing thing)
+        {
+            DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 
+                99999f, 999f);
+            
+            if (thing as Pawn is VehiclePawn)
+            {
+                VehiclePawn vP = thing as VehiclePawn;
+                if (vP?.AllPawnsAboard != null)
+                {
+                    foreach (Pawn p in vP.AllPawnsAboard.ToList())
+                    {
+                        vP.RemovePawn(p);
+                        p.Kill(disintDeathInfo);
+                        p.Corpse.Kill();
+                    }
+                }
+                if (!vP.DestroyedOrNull()) vP?.Destroy();
+
+                return true;
+            }
+            return false;
+        }
+
+        private bool ExpelVehicle(Thing thing)
+        {
+            if (thing as Pawn is VehiclePawn)
+            {
+                GenSpawn.Spawn(thing, parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
+                return true;
+            }
+
+            return false;
+            
+        }
+
+        private void SendVehicle(Thing thing)
+        {
+            if (thing as Pawn is VehiclePawn)
+            {
+                VehiclePawn vP = thing as VehiclePawn;
+                                
+                /*Check if vehicle is of tge land variety and of reasonable size*/
+                bool vehTypeValid = vP?.VehicleDef.type == VehicleType.Land;
+                bool vehSizeValid = (vP?.VehicleDef.size.x <= 3 && vP.VehicleDef.size.z <= 5);
+                if (vehTypeValid && vehSizeValid) 
+                {
+                    if (thing.Spawned) thing.DeSpawn();
+                    AddToSendBuffer(thing);
+                    PlayTeleportSound();
+                }
+                else
+                {
+                    if (!vehTypeValid)
+                    {
+                        string rejectMsgType= "StargateEnterBlockedType".Translate();
+                        Messages.Message(rejectMsgType, MessageTypeDefOf.RejectInput);
+                    }
+                    if (!vehSizeValid && vehTypeValid)
+                    {
+                        string rejectMsgSize = "StargateEnterBlockedSize".Translate();
+                        Messages.Message(rejectMsgSize, MessageTypeDefOf.RejectInput);
+                    }
+                }
+            }
+        }
+        
         public override void CompTick()
         {
             base.CompTick();
@@ -323,7 +404,14 @@ namespace StargatesMod
                 {
                     for (int i = 0; i <= _sendBuffer.Count; i++)
                     {
-                        _sendBuffer[i].Kill();
+                        /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                        if (ModsConfig.IsActive("smashphil.vehicleframework"))
+                        {
+                            if (!VehicleVortexDestruction(_sendBuffer[i]))
+                                VortexKillPawn(_sendBuffer[i]);
+                        }
+                        else VortexKillPawn(_sendBuffer[i]);
+
                         _sendBuffer.Remove(_sendBuffer[i]);
                     }
                 }
@@ -334,13 +422,29 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
-                    GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+                    /*Vehicle gets spawned slightly further away, to avoid getting stuck on the stargate*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework"))
+                    {
+                        if (!ExpelVehicle(_recvBuffer[0]))
+                        {
+                            GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+                        }
+                    }
+                    else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
+
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
                 else
                 {
-                    _recvBuffer[0].Kill();
+                    /*If thing is vehicle, make sure pawns aboard are also destroyed*/
+                    if (ModsConfig.IsActive("smashphil.vehicleframework"))
+                    {
+                        if (!VehicleVortexDestruction(_recvBuffer[0]))
+                            VortexKillPawn(_recvBuffer[0]);
+                    }
+                    else VortexKillPawn(_recvBuffer[0]);
+
                     _recvBuffer.Remove(_recvBuffer[0]);
                     SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
                 }
