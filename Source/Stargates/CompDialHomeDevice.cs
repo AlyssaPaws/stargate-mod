@@ -10,7 +10,8 @@ namespace StargatesMod
     public class CompDialHomeDevice : ThingComp
     {
         CompFacility compFacility;
-        public PlanetTile lastDialledAddress;
+        public PlanetTile queuedAddress = -1;
+        public int queuedPocketMapAddress = -1;
 
         public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)this.props;
 

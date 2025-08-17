@@ -23,6 +23,9 @@
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
 	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
+	<CannotWake_SourceMap>Cannot wake gate on pocket map: Associated source map already possesses active gate.</CannotWake_SourceMap>
+	<GateHibernating>Built gate is hibernating: Conflict with existing, awake gate</GateHibernating>
+	<GateHibernating_SourceMap>Built gate is hibernating: Conflict with existing, awake gate on pocket map's source map</GateHibernating_SourceMap>
 	
 	<!--InspectString text-->
 	<GateHibernating>Address conflict: Gate in hibernation mode.</GateHibernating>
@@ -42,13 +45,14 @@
 	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
 	<RenameGateSite>Rename stargate site</RenameGateSite>
 	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
-	<TransmitGDO>Transmit GDO code</TransmitGDO>
-	<TransmitGDODesc>Transmit an identification code through the gate, identifying yourself as friendlies and opening the iris on your stargate.</TransmitGDODesc>
+	<TransmitGDO>Transmit GDO signal</TransmitGDO>
+	<TransmitGDODesc>Transmit an identification code through the gate, identifying yourself and opening the iris on your stargate.</TransmitGDODesc>
 	<SelectConnectedGate>View connected gate</SelectConnectedGate>
-	<SelectConnectedGateDesc>View and select the gate on the other side.</SelectConnectedGateDesc>
+	<SelectConnectedGateDesc>View the gate on the other side of the wormhole connection.</SelectConnectedGateDesc>
+	<SelectGateConflict>View conflicting gate</SelectGateConflict>
+	<SelectGateConflictDesc>View the active stargate that is preventing this gate from waking. Uninstall or deconstruct the awake gate to enable waking this gate.</SelectGateConflictDesc>
 	
 	<!--Gizmo disabled messages-->
-	<CannotWake>Cannot wake gate: Active gate already present.</CannotWake>
 	<CannotGDO>Iris is already open.</CannotGDO>
 	
 	<!--FloatMenu labels-->
