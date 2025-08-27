@@ -39,6 +39,10 @@ namespace StargatesMod
         int _connectedAddressPocketMap;
         Thing _connectedStargate;
 
+        private int _checkVortexPawnsTick = -1;
+        private const int _checkVortexPawnsDelayTick = 120;
+        private List<Pawn> _pawnsWatchingStargate;
+        
         private Sustainer _puddleSustainer;
         private Graphic _stargatePuddle;
         private Graphic _stargateIris;
@@ -338,7 +342,7 @@ namespace StargatesMod
             else SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
         }
 
-private void DoUnstableVortex()
+        private void DoUnstableVortex()
         {
             List<Thing> excludedThings = new List<Thing> { parent };
             List<ThingDef> destroySpecial = new List<ThingDef>();
@@ -465,8 +469,53 @@ private void DoUnstableVortex()
                 _queuedAddress = -1;
                 _queuedAddressPocketMap = -1;
 
+                _checkVortexPawnsTick = -1;
+                
                 _prevRingSoundQueue = 0;
                 _chevronSoundCounter = 0;
+            }
+        }
+        private void CheckVortexPawns()
+        {
+            if (_pawnsWatchingStargate == null) _pawnsWatchingStargate = new List<Pawn>();
+            var radialCenter = parent.Position + new IntVec3(0, 0, -1).RotatedBy(parent.Rotation);
+            var cells = GenRadial.RadialCellsAround(radialCenter, 5, true).ToList();
+            Map map = parent.Map;
+            
+            if (Prefs.LogVerbose) Log.Message($"StargatesMod: Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
+            if (Prefs.LogVerbose) Log.Message($"StargatesMod: check radius center cell = {radialCenter}");
+            
+            foreach (IntVec3 pos in cells)
+            {
+                foreach (Thing thing in map.thingGrid.ThingsAt(pos))
+                {
+                    Pawn pawn = thing as Pawn;
+                    if (pawn == null || _pawnsWatchingStargate.Contains(pawn) || pawn.Drafted) continue;
+                    
+                    Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
+                    var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 3, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
+                    if (!pawnCells.Any()) continue;
+                    
+                    pawn.jobs.StopAll();
+                    pawn.pather.StopDead();
+                    var destPos = pawnCells.RandomElement();
+                    if (Prefs.LogVerbose) Log.Message($"StargatesMod: Directing {pawn} away from vortex to position {destPos}");
+                    pawn.jobs.ClearQueuedJobs();
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate"), parent, destPos);
+                    pawn.jobs.StartJob(job);
+                    _pawnsWatchingStargate.Add(pawn);
+                }
+            }
+        }
+
+        private void EndStargateWatching()
+        {
+            if (!_pawnsWatchingStargate.Any()) return;
+            foreach (Pawn pawn in _pawnsWatchingStargate.ToList())
+            {
+                if (pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")) 
+                    pawn.jobs.StopAll();
+                _pawnsWatchingStargate.Remove(pawn);
             }
         }
         
@@ -500,7 +549,22 @@ private void DoUnstableVortex()
         public override void CompTick()
         {
             base.CompTick();
-            if (TicksUntilOpen > 0) GateDialTick();
+            if (TicksUntilOpen > 0)
+            {
+                // Make pawns avoid vortex ?
+                if (!IrisIsActivated)
+                {
+                    if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = TicksUntilOpen;
+                    if (TicksUntilOpen == _checkVortexPawnsTick)
+                    {
+                        CheckVortexPawns();
+                        _checkVortexPawnsTick -= _checkVortexPawnsDelayTick;
+                        if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = 0;
+                    }
+                }
+                
+                GateDialTick();
+            }
 
             if (!StargateIsActive) return;
             if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
@@ -509,6 +573,8 @@ private void DoUnstableVortex()
             if (parent.Fogged())
                 FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
 
+            if (_pawnsWatchingStargate.Any()) EndStargateWatching();
+            
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             
