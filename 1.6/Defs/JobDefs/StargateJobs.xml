@@ -35,5 +35,16 @@
 		<reportString>decoding stargate glyphs.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_WatchStargate</defName>
+		<driverClass>StargatesMod.JobDriver_WatchStargate</driverClass>
+		<reportString>watching stargate open.</reportString>
+		<isIdle>true</isIdle>
+		<suspendable>false</suspendable>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+		<carryThingAfterJob>true</carryThingAfterJob>
+		<dropThingBeforeJob>false</dropThingBeforeJob>
+	</JobDef>
  
 </Defs>
