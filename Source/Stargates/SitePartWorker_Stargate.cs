@@ -20,7 +20,10 @@ namespace StargatesMod
         {
             base.PostMapGenerate(map);
             if (map == null) { Log.Error("SitePartWorker map was null on PostMapGenerate. That makes no sense."); return; }
+            
             Thing gateOnMap = CompStargate.GetStargateOnMap(map);
+            if (gateOnMap == null) { Log.Error("StargatesMod: Stargate was expected but not found on generated map."); return; }
+            
             CompStargate gateComp = gateOnMap.TryGetComp<CompStargate>();
             
             var vortexCells = gateComp.VortexCells;
