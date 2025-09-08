@@ -14,6 +14,7 @@
 	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
 	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
 	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
+	<CannotDialInvalidAddress>Stargate has no registered address. (Try reinstalling this stargate)</CannotDialInvalidAddress>
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
 	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>

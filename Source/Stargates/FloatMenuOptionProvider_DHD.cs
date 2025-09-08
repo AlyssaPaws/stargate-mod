@@ -37,11 +37,13 @@ namespace StargatesMod
                     yield break;
                 }
             }
+            
             if (sgComp.StargateIsActive)
             {
                 yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
                 yield break;
             }
+            
             WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
             addressComp.CleanupAddresses();
             if (addressComp.AddressList.Count < 2)
@@ -49,6 +51,13 @@ namespace StargatesMod
                 yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
                 yield break;
             }
+
+            if (!addressComp.AddressList.Contains(sgComp.GateAddress))
+            {
+                yield return new FloatMenuOption("CannotDialInvalidAddress".Translate(), null);
+                yield break;
+            }
+            
             if (sgComp.TicksUntilOpen > -1)
             {
                 if (sgComp.IsReceivingGate)
