@@ -2,6 +2,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -330,6 +331,18 @@ namespace StargatesMod
                 }
                 else
                 {
+                    if (_sendBuffer[0] is Pawn pawn)
+                    {
+                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
+                        {
+                            // Remove death refusal hediff (if present) before killing pawn, to avoid error.
+                            if (hediff.def.defName == "DeathRefusal")
+                            {
+                                pawn.health.RemoveHediff(hediff);
+                            }
+                        }
+                    }
+                    
                     _sendBuffer[0].Kill();
                     _sendBuffer.Remove(_sendBuffer[0]);
                 }
@@ -346,6 +359,18 @@ namespace StargatesMod
                 }
                 else
                 {
+                    if (_sendBuffer[0] is Pawn pawn)
+                    {
+                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
+                        {
+                            // Remove death refusal hediff (if present) before killing pawn, to avoid error.
+                            if (hediff.def.defName == "DeathRefusal")
+                            {
+                                pawn.health.RemoveHediff(hediff);
+                            }
+                        }
+                    }
+                    
                     _recvBuffer[0].Kill();
                     _recvBuffer.Remove(_recvBuffer[0]);
                     SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
