@@ -30,64 +30,48 @@ namespace StargatesMod
             var gateCells = GenRadial.RadialCellsAround(gateOnMap.InteractionCell, 11, true).ToList();
 
             //move pawns away from vortex
-            if (Prefs.LogVerbose) Log.Message($"StargatesMod: Moving pawns away from stargate vortex..");
-            try
+            foreach (Pawn pawn in map.mapPawns.AllPawns)
             {
-                foreach (Pawn pawn in map.mapPawns.AllPawns)
+                if (!pawn.Spawned) continue;
+                    
+                Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
+                if (!gateCells.Contains(pawn.Position)) continue;
+
+                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c =>
+                    c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c));
+                var cellsList = cells.ToList();
+                if (!cellsList.Any()) continue;
+                    
+                pawn.Position = cellsList.RandomElement();
+                pawn.pather.StopDead();
+                pawn.jobs.StopAll();
+            }
+            
+            //Fix stackCounts of certain items (especially things certain cases with stack increasing mods)
+            // also things like res mech serums even without that
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDefOf.BodyParts)))
+            {
+                if (thing.stackCount > 1)
                 {
-                    Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-                    if (!gateCells.Contains(pawn.Position)) continue;
-
-                    var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c =>
-                        c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c));
-                    var cellsList = cells.ToList();
-                    if (!cellsList.Any()) continue;
-
-                    if (Prefs.LogVerbose) Log.Message($"StargatesMod: Pawn {pawn} position is {pawn.Position}");
-                    pawn.Position = cellsList.RandomElement();
-                    pawn.pather.StopDead();
-                    pawn.jobs.StopAll();
-                    if (Prefs.LogVerbose)
-                        Log.Message($"StargatesMod: Moved {pawn} away from stargate vortex to {pawn.Position}");
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
                 }
             }
-            catch (Exception e)
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.def.defName == "MechSerumResurrector" || t.def.defName == "MechSerumHealer"))
             {
-                Log.Error($"StargatesMod: Caught error in SitePartWorker_Stargate.PostMapGenerate 'Move pawns away from vortex' - {e}");
-            }
-
-            try
-            {
-                //Fix stackCounts of certain items (especially things certain cases with stack increasing mods)
-                // also things like res mech serums even without that
-                foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDefOf.BodyParts)))
+                if (thing.stackCount > 1)
                 {
-                    if (thing.stackCount > 1)
-                    {
-                        Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                        if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                    }
-                }
-                foreach (Thing thing in map.listerThings.AllThings.Where(t => t.def.defName == "MechSerumResurrector" || t.def.defName == "MechSerumHealer"))
-                {
-                    if (thing.stackCount > 1)
-                    {
-                        Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                        if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                    }
-                }
-                foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDef.Named("Artifacts"))))
-                {
-                    if (thing.stackCount > 1)
-                    {
-                        Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                        if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                    }
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
                 }
             }
-            catch (Exception  e)
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDef.Named("Artifacts"))))
             {
-                Log.Error($"StargatesMod: Caught error in SitePartWorker_Stargate.PostMapGenerate 'Fix too high item stackCounts' - {e}");
+                if (thing.stackCount > 1)
+                {
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
+                }
             }
         }
     }
