@@ -134,7 +134,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
-		<description>An advanced version of the stargate, built with extensive research into the original design and how to replicate the functionality using more available resources than those the original stargates are built with.\n\nIt features an integrated interface on its side, allowing a user to dial without needing an external DHD. \n\n"Way smarter than we are."</description>
+		<description>An advanced version of the stargate, built with extensive research into the original design. This model replicates the functionality of the original stargates, while using more commonly available materials.\n\nIt features an integrated interface on its side, allowing a user to dial without needing an external DHD. \n\n"Way smarter than we are."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
