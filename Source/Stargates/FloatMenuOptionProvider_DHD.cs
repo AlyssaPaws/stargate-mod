@@ -73,25 +73,9 @@ namespace StargatesMod
             {
                 if (pT == sgComp.GateAddress) continue;
                 
-                Site sgDestSite = Find.WorldObjects.SiteAt(pT);
-                MapParent sgDestNonSite = null;
-                if (sgDestSite == null) sgDestNonSite = Find.WorldObjects.MapParentAt(pT);
-
-                string siteLabel = "placeHolder";
-
-                /*Account for the destination address being a non-site, e.g. player colony*/
-                if (sgDestSite != null)
-                {
-                    siteLabel = sgDestSite.Label;
-                }
-                else if (sgDestNonSite != null) siteLabel = sgDestNonSite.Label;
-                else
-                {
-                    Log.Error($"StargatesMod: Site and MapParent both were null in FloatMenuOptionProvider_DHD");
-                }
+                MapParent destMapParent = Find.WorldObjects.MapParentAt(pT);
                 
-                
-                yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), siteLabel), () =>
+                yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), destMapParent.Label), () =>
                 {
                     dhdComp.lastDialledAddress = pT;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
