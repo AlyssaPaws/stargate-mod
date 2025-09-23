@@ -7,7 +7,7 @@
 	<IrisOpen>OPEN</IrisOpen>
 	
 	<!--Notification message text-->
-	<PocketMapDisallowed>Pocket maps do not support stargate addresses.</PocketMapDisallowed>
+	<PocketMapDisallowed>Stargates cannot be placed on pocket maps.</PocketMapDisallowed>
 	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
 	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
 	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
