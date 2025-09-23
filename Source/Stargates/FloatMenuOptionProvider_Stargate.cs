@@ -8,8 +8,6 @@ namespace StargatesMod
 {
     public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
     {
-        private static List<Pawn> tmpStargateEnteringPawns = new List<Pawn>();
-
         protected override bool Drafted => true;
 
         protected override bool Undrafted => true;
@@ -22,9 +20,10 @@ namespace StargatesMod
 
         public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
         {
+            List<Pawn> tmpStargateEnteringPawns = new List<Pawn>();
+            
             CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
-
-
+            
             if (sgComp == null) yield break;
             if (!sgComp.StargateIsActive || sgComp.IrisIsActivated) yield break;
             
@@ -47,56 +46,55 @@ namespace StargatesMod
                 }
             }
 
-            if (!tmpStargateEnteringPawns.NullOrEmpty())
-            {
-                String enterStargateLabel = "EnterStargateAction".Translate();
-                if (context.IsMultiselect) enterStargateLabel = "EnterStargateWithSelectedAction".Translate();
+            if (tmpStargateEnteringPawns.NullOrEmpty()) yield break;
+            
+            String enterStargateLabel = "EnterStargateAction".Translate();
+            if (context.IsMultiselect) enterStargateLabel = "EnterStargateWithSelectedAction".Translate();
                 
-                yield return new FloatMenuOption(enterStargateLabel, delegate
+            yield return new FloatMenuOption(enterStargateLabel, delegate
+            {
+                foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
                 {
-                    foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
-                    {
-                        Pawn carriedPawn = (Pawn)tmpStargateEnteringPawn.carryTracker.CarriedThing; // Optional; ignored if null
+                    Pawn carriedPawn = (Pawn)tmpStargateEnteringPawn.carryTracker.CarriedThing; // Optional; ignored if null
                         
-                        Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), sgComp.parent, carriedPawn);
-                        job.playerForced = true;
-                        job.count = 1;
-                        tmpStargateEnteringPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                    }
-                }, MenuOptionPriority.High);
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), sgComp.parent, carriedPawn);
+                    job.playerForced = true;
+                    job.count = 1;
+                    tmpStargateEnteringPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                }
+            }, MenuOptionPriority.High);
 
                 
-                yield return new FloatMenuOption("BringThingToGateAction".Translate(), () =>
-                {
-                    TargetingParameters targetingParameters = new TargetingParameters()
-                    { 
-                        canTargetSelf = false,
-                        onlyTargetIncapacitatedPawns = false,
-                        canTargetBuildings = false,
-                        canTargetItems = true,
-                        canTargetAnimals = true,
-                        mapObjectTargetsMustBeAutoAttackable = false,
-                        validator = (Predicate<TargetInfo>) (targ =>
-                        {
-                            if (!targ.HasThing)
-                                return false;
-                            if (targ.Thing is Pawn && targ.Thing == context.FirstSelectedPawn)
-                                return false;
-                            if (targ.Thing is Pawn targ2 && targ.Thing.Faction != Faction.OfPlayer && !targ2.IsPrisonerOfColony)
-                                return false;
-                            if (!(targ.Thing is Pawn) && targ.Thing.def.category != ThingCategory.Item)
-                                return false;
-                            return true;
-                        })
-                    };
-                
-                    Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
+            yield return new FloatMenuOption("BringThingToGateAction".Translate(), () =>
+            {
+                TargetingParameters targetingParameters = new TargetingParameters()
+                { 
+                    canTargetSelf = false,
+                    onlyTargetIncapacitatedPawns = false,
+                    canTargetBuildings = false,
+                    canTargetItems = true,
+                    canTargetAnimals = true,
+                    mapObjectTargetsMustBeAutoAttackable = false,
+                    validator = (Predicate<TargetInfo>) (targ =>
                     {
-                        Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, sgComp.parent); 
-                        context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                    });
+                        if (!targ.HasThing)
+                            return false;
+                        if (targ.Thing is Pawn && targ.Thing == context.FirstSelectedPawn)
+                            return false;
+                        if (targ.Thing is Pawn targ2 && targ.Thing.Faction != Faction.OfPlayer && !targ2.IsPrisonerOfColony)
+                            return false;
+                        if (!(targ.Thing is Pawn) && targ.Thing.def.category != ThingCategory.Item)
+                            return false;
+                        return true;
+                    })
+                };
+                
+                Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
+                {
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, sgComp.parent); 
+                    context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
-            }
+            });
         }
 
         private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate)
