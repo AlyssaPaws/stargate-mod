@@ -36,7 +36,7 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_IrisInstallKit</defName>
 		<label>iris installation kit</label>
-		<description>A kit containing all the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris." \n\n Anything trying to exit through a stargate with a closed iris will fail to be reintegrated, killing the thing or person in question. Remember to open your iris before you send your people back home!</description>
+		<description>A kit containing all the pre-assembled materials needed to install an iris on a stargate.\n\nAnything trying to exit through a stargate with a closed iris will fail to be reintegrated, destroying the object or person in question. Users should therefore open the iris before attempting to receive objects through the stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
 			<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
