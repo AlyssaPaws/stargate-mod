@@ -49,8 +49,7 @@ namespace StargatesMod
             get
             {
                 CompTransporter transComp = parent.GetComp<CompTransporter>();
-                return transComp != null && (transComp.LoadingInProgressOrReadyToLaunch &&
-                                             transComp.AnyInGroupHasAnythingLeftToLoad);
+                return transComp != null && (transComp.LoadingInProgressOrReadyToLaunch && transComp.AnyInGroupHasAnythingLeftToLoad);
             }
         }
 
@@ -269,19 +268,40 @@ namespace StargatesMod
             _recvBuffer.Add(thing);
         }
 
+        private void WormholeContentDisposal(bool isRecvBuffer)
+        {
+            Thing item = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
+            
+            if (item is Pawn pawn)
+            {
+                foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
+                {
+                    // Remove death refusal hediff (if present) before killing pawn, to avoid error.
+                    if (hediff.def.defName == "DeathRefusal")
+                        pawn.health.RemoveHediff(hediff);
+                }
+            }
+                    
+            item.Kill();
+            if (!isRecvBuffer) _sendBuffer.Remove(item);
+            else
+            {
+                _recvBuffer.Remove(item);
+                SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
+            }
+        }
+        
         #region Comp Overrides
 
         public override void PostDraw()
         {
             base.PostDraw();
             if (IrisIsActivated)
-                StargateIris.Draw(
-                    parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f),
+                StargateIris.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f),
                     Rot4.North, parent);
 
             if (StargateIsActive)
-                StargatePuddle.Draw(
-                    parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f),
+                StargatePuddle.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f),
                     Rot4.North, parent);
         }
 
@@ -329,23 +349,7 @@ namespace StargatesMod
                     sgComp.AddToReceiveBuffer(_sendBuffer[0]);
                     _sendBuffer.Remove(_sendBuffer[0]);
                 }
-                else
-                {
-                    if (_sendBuffer[0] is Pawn pawn)
-                    {
-                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
-                        {
-                            // Remove death refusal hediff (if present) before killing pawn, to avoid error.
-                            if (hediff.def.defName == "DeathRefusal")
-                            {
-                                pawn.health.RemoveHediff(hediff);
-                            }
-                        }
-                    }
-                    
-                    _sendBuffer[0].Kill();
-                    _sendBuffer.Remove(_sendBuffer[0]);
-                }
+                else WormholeContentDisposal(false);
             }
 
             if (_recvBuffer.Any() && TicksSinceBufferUnloaded > Rand.Range(10, 80))
@@ -357,32 +361,14 @@ namespace StargatesMod
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
-                else
-                {
-                    if (_sendBuffer[0] is Pawn pawn)
-                    {
-                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
-                        {
-                            // Remove death refusal hediff (if present) before killing pawn, to avoid error.
-                            if (hediff.def.defName == "DeathRefusal")
-                            {
-                                pawn.health.RemoveHediff(hediff);
-                            }
-                        }
-                    }
-                    
-                    _recvBuffer[0].Kill();
-                    _recvBuffer.Remove(_recvBuffer[0]);
-                    SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
-                }
+                else WormholeContentDisposal(true);
 
                 if (_connectedAddress == -1 && !_recvBuffer.Any())
                     CloseStargate(false);
 
                 TicksSinceBufferUnloaded++;
                 TicksSinceOpened++;
-                if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 &&
-                    !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+                if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
                     CloseStargate(true);
             }
 
@@ -392,8 +378,7 @@ namespace StargatesMod
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
 
-            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 &&
-                !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
                 CloseStargate(true);
         }
 
@@ -406,7 +391,7 @@ namespace StargatesMod
 
             if (StargateIsActive)
             {
-                if (_connectedStargate == null && _connectedAddress != -1)
+                if (_connectedStargate == null && _connectedAddress != -1) 
                     _connectedStargate = GetStargateOnMap(_connectedAddress);
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
@@ -416,8 +401,7 @@ namespace StargatesMod
             if (transComp != null && transComp.innerContainer == null)
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             if (Prefs.LogVerbose)
-                Log.Message(
-                    $"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
+                Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
         }
 
         public string GetInspectString()
@@ -427,8 +411,7 @@ namespace StargatesMod
             if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             if (StargateIsActive)
-                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
-                    (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
 
             if (HasIris)
                 sb.AppendLine("IrisStatus".Translate((IrisIsActivated ? "IrisClosed" : "IrisOpen").Translate()));
