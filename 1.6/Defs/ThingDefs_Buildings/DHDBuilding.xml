@@ -49,6 +49,7 @@
 			<Gold>100</Gold>
 		</costList>
 		<statBases>
+			<MarketValue>1500</MarketValue>
 			<MaxHitPoints>6000</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Mass>60</Mass>
