@@ -49,6 +49,18 @@
 				<li Class="QuestNode_GetSiteTile">
 					<storeAs>siteTile</storeAs>
 					<preferCloserTiles>false</preferCloserTiles>
+					<selectLandmarkChance>0.3</selectLandmarkChance>
+					<allowedLandmarks>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">DryLake</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Wetland</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Valley</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Chasm</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Cliffs</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Hollow</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">TerraformingScar</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Dunes</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">AncientHeatVent</li>
+					</allowedLandmarks>
 				</li>
 
 				<li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
