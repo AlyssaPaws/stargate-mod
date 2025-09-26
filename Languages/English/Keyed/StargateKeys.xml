@@ -5,6 +5,8 @@
 	<Outgoing>outgoing</Outgoing>
 	<IrisClosed>CLOSED</IrisClosed>
 	<IrisOpen>OPEN</IrisOpen>
+	<Missing>Missing</Missing>
+	<NotNeeded>Not Needed</NotNeeded>
 	
 	<!--Notification message text-->
 	<PocketMapDisallowed>Stargates cannot be placed on pocket maps.</PocketMapDisallowed>
@@ -27,6 +29,8 @@
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
+    <StargateStatus>Stargate: present ({0})</StargateStatus>
+    <DhdStatus>DHD: present ({0})</DhdStatus>
 	
 	<!--Gizmo labels and descriptions-->
 	<OpenCloseIris>Open/close iris</OpenCloseIris>

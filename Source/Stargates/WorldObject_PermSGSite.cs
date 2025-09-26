@@ -27,7 +27,19 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
-            return "GateAddress".Translate(CompStargate.GetStargateDesignation(Tile));
+            string gateLabel = GateDef?.label;
+            if (GateDef == null) gateLabel = "Missing".Translate();
+
+            string dhdLabel = DhdDef?.label;
+            if (DhdDef == null)
+                dhdLabel = GateDef != ThingDef.Named("StargateMod_Stargate") ? "NotNeeded".Translate() : "Missing".Translate();
+            
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
+            sb.AppendLine("-");
+            sb.AppendLine("StargateStatus".Translate(gateLabel));
+            sb.AppendLine("DhdStatus".Translate(dhdLabel));
+            return sb.ToString().TrimEndNewlines();
         }
 
         public override void SpawnSetup()
@@ -46,7 +58,7 @@ namespace StargatesMod
         {
             base.PostMapGenerate();
             //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
-            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) 
+            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
                 pawn.Destroy();
 
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
