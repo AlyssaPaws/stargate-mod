@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using Verse;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using Verse.AI;
 
 namespace StargatesMod
@@ -23,15 +24,8 @@ namespace StargatesMod
 
         public static Thing GetDHDOnMap(Map map)
         {
-            Thing dhdOnMap = null;
-            foreach (Thing thing in map.listerThings.AllThings)
-            {
-                if (thing.TryGetComp<CompDialHomeDevice>() != null && thing.def.thingClass != typeof(Building_Stargate))
-                {
-                    dhdOnMap = thing;
-                    break;
-                }
-            }
+            Thing dhdOnMap = map.listerThings.AllThings.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback();
+            
             return dhdOnMap;
         }
 

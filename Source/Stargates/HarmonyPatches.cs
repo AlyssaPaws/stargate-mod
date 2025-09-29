@@ -29,8 +29,7 @@ namespace StargatesMod
         static void Postfix(Map ___map, ref bool __result)
         {
             Thing sgThing = CompStargate.GetStargateOnMap(___map);
-            if (sgThing == null) return;
-            CompStargate sgComp = sgThing.TryGetComp<CompStargate>();
+            CompStargate sgComp = sgThing?.TryGetComp<CompStargate>();
             if (sgComp == null) return;
 
             if (sgComp.StargateIsActive) __result = true;

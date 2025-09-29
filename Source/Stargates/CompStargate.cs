@@ -186,14 +186,12 @@ namespace StargatesMod
         public static Thing GetStargateOnMap(Map map, Thing thingToIgnore = null)
         {
             Thing gateOnMap = null;
-            foreach (Thing thing in map.listerThings.AllThings)
-            {
-                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
-                {
-                    gateOnMap = thing;
-                    break;
-                }
-            }
+            
+            Thing thing = map.listerThings.AllThings.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
+            
+            if (thing != thingToIgnore) 
+                gateOnMap = thing;
+            
             return gateOnMap;
         }
         
@@ -202,14 +200,11 @@ namespace StargatesMod
             Thing gateOnMap = null;
             Map map = Find.WorldObjects.MapParentAt(address).Map;
             
-            foreach (Thing thing in map.listerThings.AllThings)
-            {
-                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
-                {
-                    gateOnMap = thing;
-                    break;
-                }
-            }
+            Thing thing = map.listerThings.AllThings.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
+            
+            if (thing != thingToIgnore) 
+                gateOnMap = thing;
+            
             return gateOnMap;
          }
 
