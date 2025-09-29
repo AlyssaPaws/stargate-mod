@@ -48,8 +48,8 @@ namespace StargatesMod
 
             if (tmpStargateEnteringPawns.NullOrEmpty()) yield break;
             
-            String enterStargateLabel = "EnterStargateAction".Translate();
-            if (context.IsMultiselect) enterStargateLabel = "EnterStargateWithSelectedAction".Translate();
+            String enterStargateLabel = "SGM.EnterStargateAction".Translate();
+            if (context.IsMultiselect) enterStargateLabel = "SGM.EnterStargateWithSelectedAction".Translate();
                 
             yield return new FloatMenuOption(enterStargateLabel, delegate
             {
@@ -65,7 +65,7 @@ namespace StargatesMod
             }, MenuOptionPriority.High);
 
                 
-            yield return new FloatMenuOption("BringThingToGateAction".Translate(), () =>
+            yield return new FloatMenuOption("SGM.BringThingToGateAction".Translate(), () =>
             {
                 TargetingParameters targetingParameters = new TargetingParameters()
                 { 

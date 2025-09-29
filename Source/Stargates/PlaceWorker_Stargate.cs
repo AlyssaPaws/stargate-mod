@@ -31,11 +31,11 @@ namespace StargatesMod
 		{
             if (CompStargate.GetStargateOnMap(map, thing) != null)
             {
-                return new AcceptanceReport("OnlyOneSGPerMap".Translate());
+                return new AcceptanceReport("SGM.OnlyOneSGPerMap".Translate());
             }
             
-            /*Pocket Maps do not have an associated PlanetTile, so no gate address, so stargates cannot work on them*/
-            if(map.IsPocketMap) return new AcceptanceReport("PocketMapNo".Translate());
+            /*Pocket maps currently not supported*/
+            if(map.IsPocketMap) return new AcceptanceReport("SGM.PocketMapDisallowed".Translate());
 
 			return true;
 		}

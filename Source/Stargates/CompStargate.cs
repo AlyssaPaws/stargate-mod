@@ -79,7 +79,7 @@ namespace StargatesMod
                 LongEventHandler.QueueLongEvent(delegate
                 {
                     GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMap.def);
-                }, "SGM_GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
+                }, "SGM.GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
                 {
                     if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished generating map");
 
@@ -99,7 +99,7 @@ namespace StargatesMod
 
             if (address > -1 && (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive))
             {
-                Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
+                Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
                 SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
                 return;
             }
@@ -407,16 +407,16 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(GateAddress)));
+            sb.AppendLine("SGM.GateAddress".Translate(GetStargateDesignation(GateAddress)));
             if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             if (StargateIsActive)
-                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+                sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
 
             if (HasIris)
-                sb.AppendLine("IrisStatus".Translate((IrisIsActivated ? "IrisClosed" : "IrisOpen").Translate()));
+                sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
             if (TicksUntilOpen > 0)
-                sb.AppendLine("TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
+                sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
             return sb.ToString().TrimEndNewlines();
         }
 
@@ -428,8 +428,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "OpenCloseIris".Translate(),
-                    defaultDesc = "OpenCloseIrisDesc".Translate(),
+                    defaultLabel = "SGM.OpenCloseIris".Translate(),
+                    defaultDesc = "SGM.OpenCloseIrisDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get(Props.irisTexture),
                     action = delegate
                     {
@@ -500,7 +500,7 @@ namespace StargatesMod
 
         public override string CompInspectStringExtra()
         {
-            return base.CompInspectStringExtra() + "RespawnGateString".Translate();
+            return base.CompInspectStringExtra() + "SGM.RespawnGateString".Translate();
         }
 
         #endregion

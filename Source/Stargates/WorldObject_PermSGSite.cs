@@ -29,28 +29,28 @@ namespace StargatesMod
         {
             string gatePresenceLabel;
             string gateLabel = "";
-            if (GateDef == null) gatePresenceLabel = "Missing".Translate();
+            if (GateDef == null) gatePresenceLabel = "SGM.Missing".Translate();
             else
             {
-                gatePresenceLabel = "Present".Translate();
-                gateLabel = $"({GateDef.label.CapitalizeFirst()})";
+                gatePresenceLabel = "SGM.Present".Translate();
+                gateLabel = GateDef.label.CapitalizeFirst();
             }
 
             string dhdPresenceLabel;
             string dhdLabel = "";
             if (DhdDef == null)
-                dhdPresenceLabel = GateDef != ThingDef.Named("StargateMod_Stargate") ?  "Missing".Translate() +" "+ "NotNeeded".Translate() : "Missing".Translate();
+                dhdPresenceLabel = GateDef != ThingDef.Named("StargateMod_Stargate") ?  "SGM.Missing".Translate() +" "+ "SGM.NotNeeded".Translate() : "SGM.Missing".Translate();
             else
             {
-                dhdPresenceLabel = "Present".Translate();
-                dhdLabel = $"({DhdDef.label.CapitalizeFirst()})";
+                dhdPresenceLabel = "SGM.Present".Translate();
+                dhdLabel = DhdDef.label.CapitalizeFirst();
             }
             
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
+            sb.AppendLine("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
             sb.AppendLine("-");
-            sb.AppendLine("StargateStatus".Translate(gatePresenceLabel, gateLabel));
-            sb.AppendLine("DhdStatus".Translate( dhdPresenceLabel, dhdLabel));
+            sb.AppendLine("SGM.StargateStatus".Translate(gatePresenceLabel, gateLabel));
+            sb.AppendLine("SGM.DhdStatus".Translate( dhdPresenceLabel, dhdLabel));
             return sb.ToString().TrimEndNewlines();
         }
 
@@ -128,8 +128,8 @@ namespace StargatesMod
             {
                 icon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename"),
                 action = () => { Find.WindowStack.Add(new Dialog_RenameSGSite(this)); },
-                defaultLabel = "RenameGateSite".Translate(),
-                defaultDesc = "RenameGateSiteDesc".Translate()
+                defaultLabel = "SGM.RenameGateSite".Translate(),
+                defaultDesc = "SGM.RenameGateSiteDesc".Translate()
             };
         }
 

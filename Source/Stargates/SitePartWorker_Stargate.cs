@@ -12,7 +12,7 @@ namespace StargatesMod
         public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
+            sb.Append("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
             return sb.ToString();
         }
  

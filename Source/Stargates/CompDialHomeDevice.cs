@@ -63,16 +63,16 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "CloseStargate".Translate(),
-                    defaultDesc = "CloseStargateDesc".Translate(),
+                    defaultLabel = "SGM.CloseStargate".Translate(),
+                    defaultDesc = "SGM.CloseStargateDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
                     action = delegate
                     {
                         stargate.CloseStargate(true);
                     }
                 };
-                if (!stargate.StargateIsActive) { command.Disable("GateIsNotActive".Translate()); }
-                else if (stargate.IsReceivingGate) { command.Disable("CannotCloseIncoming".Translate()); }
+                if (!stargate.StargateIsActive) { command.Disable("SGM.GateIsNotActive".Translate()); }
+                else if (stargate.IsReceivingGate) { command.Disable("SGM.CannotCloseIncoming".Translate()); }
                 yield return command;
             }
         }

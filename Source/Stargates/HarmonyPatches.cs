@@ -95,12 +95,12 @@ namespace StargatesMod
                     wo.DhdDef = dhdDef;
                     Find.WorldObjects.Add(wo);
                 },
-                defaultLabel = "CreateSGSite".Translate(),
-                defaultDesc = "CreateSGSiteDesc".Translate()
+                defaultLabel = "SGM.CreateSGSite".Translate(),
+                defaultDesc = "SGM.CreateSGSiteDesc".Translate()
             };
             StringBuilder reason = new StringBuilder();
-            if (!containsStargate) command.Disable("NoGateInCaravan".Translate());
-            else if (__instance.Tile.Tile.Landmark != null) command.Disable("BlockedByLandmark".Translate());
+            if (!containsStargate) command.Disable("SGM.NoGateInCaravan".Translate());
+            else if (__instance.Tile.Tile.Landmark != null) command.Disable("SGM.BlockedByLandmark".Translate());
             else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
             yield return command;
         }
@@ -124,7 +124,7 @@ namespace StargatesMod
 
             if (sgComp.StargateIsActive)
             {
-                option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
+                option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("SGM.CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
                 {
                     selPawn.carryTracker.TryDropCarriedThing(selPawn.Position, ThingPlaceMode.Near, out var targPawn);
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), targPawn, clickedThing);
@@ -136,7 +136,7 @@ namespace StargatesMod
             }
 
             /*Can't figure out how to not display a floatMenuOption without a NullRefException, so this's fine I guess*/
-            __result = new [] { new FloatMenuOption("CarryHeldToStargateAction_Disabled".Translate(), null) };
+            __result = new [] { new FloatMenuOption("SGM.CarryHeldToStargateAction_Disabled".Translate(), null) };
             return false;
         }
     }
