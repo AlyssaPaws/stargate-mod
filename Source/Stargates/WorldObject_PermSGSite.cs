@@ -33,7 +33,7 @@ namespace StargatesMod
             else
             {
                 gatePresenceLabel = "SGM.Present".Translate();
-                gateLabel = GateDef.label.CapitalizeFirst();
+                gateLabel = $"({GateDef.label.CapitalizeFirst()})";
             }
 
             string dhdPresenceLabel;
@@ -43,7 +43,7 @@ namespace StargatesMod
             else
             {
                 dhdPresenceLabel = "SGM.Present".Translate();
-                dhdLabel = DhdDef.label.CapitalizeFirst();
+                dhdLabel = $"({DhdDef.label.CapitalizeFirst()})";
             }
             
             StringBuilder sb = new StringBuilder();
