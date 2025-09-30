@@ -1,5 +1,4 @@
-﻿using System;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using Verse.AI;
 
 namespace StargatesMod
 {
@@ -145,19 +143,19 @@ namespace StargatesMod
             foreach (Thing thing in _recvBuffer)
                 GenSpawn.Spawn(thing, parent.InteractionCell, parent.Map);
 
-            CompStargate sgComp = null;
+            CompStargate connectedGateComp = null;
             if (closeOtherGate)
             {
-                sgComp = _connectedStargate.TryGetComp<CompStargate>();
-                if (_connectedStargate == null || sgComp == null)
-                    Log.Warning($"Recieving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
-                else
-                    sgComp.CloseStargate(false);
+                connectedGateComp = _connectedStargate.TryGetComp<CompStargate>();
+                
+                if (_connectedStargate == null || connectedGateComp == null)
+                    Log.Warning($"Receiving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
+                else connectedGateComp.CloseStargate(false);
             }
 
             SoundDef puddleCloseDef = SGSoundDefOf.StargateMod_SGClose;
             puddleCloseDef.PlayOneShot(SoundInfo.InMap(parent));
-            if (sgComp != null) puddleCloseDef.PlayOneShot(SoundInfo.InMap(sgComp.parent));
+            if (connectedGateComp != null) puddleCloseDef.PlayOneShot(SoundInfo.InMap(connectedGateComp.parent));
 
             _puddleSustainer?.End();
 
@@ -168,8 +166,8 @@ namespace StargatesMod
             if (Props.explodeOnUse)
             {
                 CompExplosive explosive = parent.TryGetComp<CompExplosive>();
-                if (explosive == null)
-                    Log.Warning($"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
+                
+                if (explosive == null) Log.Warning($"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
                 else explosive.StartWick();
             }
 
@@ -199,31 +197,28 @@ namespace StargatesMod
         public static string GetStargateDesignation(PlanetTile address)
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
+            
             Rand.PushState(address.tileId);
             //pattern: (pLDesignation)(num)(char)-(num)(num)(num)
             string pLDesignation = address.Layer.Def.isSpace ? "O" : "P"; //Planet layer designation: O for orbit / space, P for planetary / other
             string designation = $"{pLDesignation}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
             Rand.PopState();
+            
             return designation;
         }
 
         private void PlayTeleportSound()
         {
-            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}")
-                .PlayOneShot(SoundInfo.InMap(parent));
+            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}").PlayOneShot(SoundInfo.InMap(parent));
         }
 
         private void DoUnstableVortex()
         {
             List<Thing> excludedThings = new List<Thing> { parent };
-            foreach (IntVec3 pos in Props.vortexPattern)
-            {
-                foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
-                {
-                    if (thing.def.passability == Traversability.Standable)
-                        excludedThings.Add(thing);
-                }
-            }
+            
+            excludedThings.AddRange(from pos in Props.vortexPattern 
+                from thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos) 
+                where thing.def.passability == Traversability.Standable select thing);
 
             foreach (IntVec3 pos in Props.vortexPattern)
             {
@@ -252,23 +247,22 @@ namespace StargatesMod
 
         private void WormholeContentDisposal(bool isRecvBuffer)
         {
-            Thing item = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
-            
-            if (item is Pawn pawn)
+            Thing thingToDestroy = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
+            if (thingToDestroy is Pawn pawn)
             {
-                foreach (Hediff hediff in pawn.health.hediffSet.hediffs.ToList())
+                // Remove death refusal hediff (if present) before killing pawn, to avoid error.
+                foreach (var hediff in pawn.health.hediffSet.hediffs.ToList().Where(hediff => hediff.def.defName == "DeathRefusal"))
                 {
-                    // Remove death refusal hediff (if present) before killing pawn, to avoid error.
-                    if (hediff.def.defName == "DeathRefusal")
-                        pawn.health.RemoveHediff(hediff);
+                    pawn.health.RemoveHediff(hediff);
                 }
             }
                     
-            item.Kill();
-            if (!isRecvBuffer) _sendBuffer.Remove(item);
+            if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill();
+            
+            if (!isRecvBuffer) _sendBuffer.Remove(thingToDestroy);
             else
             {
-                _recvBuffer.Remove(item);
+                _recvBuffer.Remove(thingToDestroy);
                 SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
             }
         }
@@ -279,12 +273,10 @@ namespace StargatesMod
         {
             base.PostDraw();
             if (IrisIsActivated)
-                StargateIris.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f),
-                    Rot4.North, parent);
+                StargateIris.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f), Rot4.North, parent);
 
             if (StargateIsActive)
-                StargatePuddle.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f),
-                    Rot4.North, parent);
+                StargatePuddle.Draw(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f), Rot4.North, parent);
         }
 
         public override void CompTick()
@@ -305,20 +297,19 @@ namespace StargatesMod
             if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
                 DoUnstableVortex();
 
-            if (parent.Fogged())
-                FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
+            if (parent.Fogged()) FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
 
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             
             if (transComp != null)
             {
-                Thing thing = transComp.innerContainer.FirstOrFallback();
-                if (thing != null)
+                Thing transportThing = transComp.innerContainer.FirstOrFallback();
+                if (transportThing != null)
                 {
-                    if (thing.Spawned) thing.DeSpawn();
-                    AddToSendBuffer(thing);
-                    transComp.innerContainer.Remove(thing);
+                    if (transportThing.Spawned) transportThing.DeSpawn();
+                    AddToSendBuffer(transportThing);
+                    transComp.innerContainer.Remove(transportThing);
                 }
                 else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad)
                     transComp.CancelLoad();
@@ -382,23 +373,28 @@ namespace StargatesMod
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             if (transComp != null && transComp.innerContainer == null)
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
-            if (Prefs.LogVerbose)
-                Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
+            
+            if (Prefs.LogVerbose) Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
         }
 
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("SGM.GateAddress".Translate(GetStargateDesignation(GateAddress)));
-            if (!StargateIsActive && TicksUntilOpen <= -1)
-                sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
-            if (StargateIsActive)
-                sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+            
+            switch (StargateIsActive)
+            {
+                case false when TicksUntilOpen <= -1:
+                    sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
+                    break;
+                case true:
+                    sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+                    break;
+            }
 
-            if (HasIris)
-                sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
-            if (TicksUntilOpen > 0)
-                sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
+            if (HasIris) sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
+            if (TicksUntilOpen > 0) sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
+            
             return sb.ToString().TrimEndNewlines();
         }
 
@@ -408,7 +404,7 @@ namespace StargatesMod
 
             if (Props.canHaveIris && HasIris)
             {
-                Command_Action command = new Command_Action
+                Command_Action irisControl = new Command_Action
                 {
                     defaultLabel = "SGM.OpenCloseIris".Translate(),
                     defaultDesc = "SGM.OpenCloseIrisDesc".Translate(),
@@ -420,30 +416,28 @@ namespace StargatesMod
                         else SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
                     }
                 };
-                yield return command;
+                yield return irisControl;
             }
 
-            if (Prefs.DevMode)
+            if (!Prefs.DevMode) yield break;
+            
+            Command_Action devAddRemoveIris = new Command_Action
             {
-                Command_Action command = new Command_Action
+                defaultLabel = "Add/remove iris",
+                action = delegate { HasIris = !HasIris; }
+            };
+            yield return devAddRemoveIris;
+            devAddRemoveIris = new Command_Action
+            {
+                defaultLabel = "Force close",
+                defaultDesc = "Force close this gate to hopefully remove strange behaviours (this will not close gate at the other end).",
+                action = delegate
                 {
-                    defaultLabel = "Add/remove iris",
-                    action = delegate { HasIris = !HasIris; }
-                };
-                yield return command;
-                command = new Command_Action
-                {
-                    defaultLabel = "Force close",
-                    defaultDesc =
-                        "Force close this gate to hopefully remove strange behaviours (this will not close gate at the other end).",
-                    action = delegate
-                    {
-                        CloseStargate(false);
-                        Log.Message($"Stargate {parent.ThingID} was force-closed.");
-                    }
-                };
-                yield return command;
-            }
+                    CloseStargate(false);
+                    Log.Message($"Stargate {parent.ThingID} was force-closed.");
+                }
+            };
+            yield return devAddRemoveIris;
         }
 
         private void CleanupGate()
@@ -452,8 +446,7 @@ namespace StargatesMod
 
             Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
         }
-
-
+        
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map, mode);

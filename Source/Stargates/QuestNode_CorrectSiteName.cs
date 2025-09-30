@@ -1,6 +1,5 @@
 using RimWorld.Planet;
 using RimWorld.QuestGen;
-using Verse;
 
 namespace StargatesMod
 {
@@ -13,9 +12,7 @@ namespace StargatesMod
         {
             return true;
         }
-
-        /*Sets up a QuestPart_CorrectSiteName with the passed values that will correct the (stargate) site's name when the specified signal is sent*/
-        /*Signal sent by a QuestNode_Delay*/
+        
         protected override void RunInt()
         {
             Slate slate = QuestGen.slate;
@@ -26,8 +23,8 @@ namespace StargatesMod
                 site = site.GetValue(slate),
                 quest = QuestGen.quest
             };
-            QuestGen.quest.AddPart(questPartCorrectSiteName);
             
+            QuestGen.quest.AddPart(questPartCorrectSiteName);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -38,13 +39,7 @@ namespace StargatesMod
             }
 
             tmpStargateEnteringPawns.Clear();
-            foreach (Pawn validSelectedPawn in context.ValidSelectedPawns)
-            {
-                if (CanReachStargate(validSelectedPawn, sgComp.parent))
-                {
-                    tmpStargateEnteringPawns.Add(validSelectedPawn);
-                }
-            }
+            tmpStargateEnteringPawns.AddRange(context.ValidSelectedPawns.Where(validSelectedPawn => CanReachStargate(validSelectedPawn, sgComp.parent)));
 
             if (tmpStargateEnteringPawns.NullOrEmpty()) yield break;
             
@@ -75,18 +70,19 @@ namespace StargatesMod
                     canTargetItems = true,
                     canTargetAnimals = true,
                     mapObjectTargetsMustBeAutoAttackable = false,
-                    validator = (Predicate<TargetInfo>) (targ =>
+                    validator = targ =>
                     {
-                        if (!targ.HasThing)
+                        if (!targ.HasThing) return false;
+                        
+                        Pawn targetPawn = targ.Thing as Pawn;
+                        
+                        if (targetPawn != null && targ.Thing == context.FirstSelectedPawn)
                             return false;
-                        if (targ.Thing is Pawn && targ.Thing == context.FirstSelectedPawn)
+                        if (targetPawn != null && targ.Thing.Faction != Faction.OfPlayer && !targetPawn.IsPrisonerOfColony)
                             return false;
-                        if (targ.Thing is Pawn targ2 && targ.Thing.Faction != Faction.OfPlayer && !targ2.IsPrisonerOfColony)
-                            return false;
-                        if (!(targ.Thing is Pawn) && targ.Thing.def.category != ThingCategory.Item)
-                            return false;
-                        return true;
-                    })
+                        
+                        return targetPawn != null || targ.Thing.def.category == ThingCategory.Item;
+                    }
                 };
                 
                 Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
@@ -100,9 +96,8 @@ namespace StargatesMod
         private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate)
         {
             if (!pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly))
-            {
                 return "NoPath".Translate();
-            }
+            
             return true;
         }
     }

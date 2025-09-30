@@ -1,10 +1,6 @@
-﻿using System;
-using RimWorld;
-using Verse;
+﻿using Verse;
 using Verse.AI;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StargatesMod
 {

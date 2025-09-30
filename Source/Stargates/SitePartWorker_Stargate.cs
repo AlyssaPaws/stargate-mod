@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Verse;
 using RimWorld.Planet;
 using RimWorld;
@@ -27,51 +26,38 @@ namespace StargatesMod
             CompStargate gateComp = gateOnMap.TryGetComp<CompStargate>();
             
             var vortexCells = gateComp.VortexCells;
-            var gateCells = GenRadial.RadialCellsAround(gateOnMap.InteractionCell, 11, true).ToList();
+            var gateRadiusCells = GenRadial.RadialCellsAround(gateOnMap.InteractionCell, 11, true).ToList();
 
             //move pawns away from vortex
-            foreach (Pawn pawn in map.mapPawns.AllPawns)
+            foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
             {
-                if (!pawn.Spawned) continue;
-                    
                 Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-                if (!gateCells.Contains(pawn.Position)) continue;
+                if (!gateRadiusCells.Contains(pawn.Position)) continue;
 
-                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c =>
-                    c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c));
-                var cellsList = cells.ToList();
-                if (!cellsList.Any()) continue;
+                var nearSafeCells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => 
+                    c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c)).ToList();
+                
+                if (!nearSafeCells.Any()) continue;
                     
-                pawn.Position = cellsList.RandomElement();
+                pawn.Position = nearSafeCells.RandomElement();
                 pawn.pather.StopDead();
                 pawn.jobs.StopAll();
             }
             
             //Fix stackCounts of certain items (especially things certain cases with stack increasing mods)
-            // also things like res mech serums even without that
-            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDefOf.BodyParts)))
+            //also things like res mech serums even without that
+            ThingFilter itemsToRebalance = new ThingFilter();
+            itemsToRebalance.SetAllow(ThingCategoryDefOf.BodyParts, true);
+            itemsToRebalance.SetAllow(ThingCategoryDef.Named("Artifacts"), true);
+            itemsToRebalance.SetAllow(ThingDef.Named("MechSerumResurrector"), true);
+            itemsToRebalance.SetAllow(ThingDef.Named("MechSerumHealer"), true);
+            
+            foreach (Thing thing in map.listerThings.ThingsMatchingFilter(itemsToRebalance))
             {
-                if (thing.stackCount > 1)
-                {
-                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                }
-            }
-            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.def.defName == "MechSerumResurrector" || t.def.defName == "MechSerumHealer"))
-            {
-                if (thing.stackCount > 1)
-                {
-                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                }
-            }
-            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDef.Named("Artifacts"))))
-            {
-                if (thing.stackCount > 1)
-                {
-                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
-                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
-                }
+                if (thing.stackCount <= 1) continue;
+                
+                Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
             }
         }
     }

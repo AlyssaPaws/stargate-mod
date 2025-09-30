@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using RimWorld;
@@ -87,24 +85,26 @@ namespace StargatesMod
                     spGate.SetFaction(Faction.OfPlayer);
                 }
             }
-            if (dhdOnMap != null)
-            {
-                IntVec3 dhdPos = dhdOnMap.Position;
-                dhdOnMap.Destroy();
-                if (DhdDef != null)
-                {
-                    Thing spDhd = GenSpawn.Spawn(DhdDef, dhdPos, Map);
-                    spDhd.SetFaction(Faction.OfPlayer);
-                }
-            }
+
+            if (dhdOnMap == null) return;
+            
+            IntVec3 dhdPos = dhdOnMap.Position;
+            dhdOnMap.Destroy();
+                
+            if (DhdDef == null) return;
+                
+            Thing spDhd = GenSpawn.Spawn(DhdDef, dhdPos, Map);
+            spDhd.SetFaction(Faction.OfPlayer);
         }
 
         public override void Notify_MyMapAboutToBeRemoved()
         {
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
+            
             DhdDef = dhdOnMap?.def;
             GateDef = gateOnMap?.def;
+            
             if (Prefs.LogVerbose) Log.Message($"StargatesMod: perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
         }
 

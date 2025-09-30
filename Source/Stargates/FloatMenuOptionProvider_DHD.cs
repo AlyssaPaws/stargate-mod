@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -23,7 +22,7 @@ namespace StargatesMod
         {
             CompDialHomeDevice dhdComp =  clickedThing.TryGetComp<CompDialHomeDevice>();
             if (dhdComp == null) yield break;
-            CompStargate sgComp = dhdComp.GetLinkedStargate();
+            CompStargate sgComp = dhdComp.GetLinkedStargateComp();
             
             
             if (!CanReachDHD(context.FirstSelectedPawn, clickedThing) || !dhdComp.IsConnectedToStargate) yield break;
@@ -87,9 +86,8 @@ namespace StargatesMod
         private static AcceptanceReport CanReachDHD(Pawn pawn, Thing dhd)
         {
             if (!pawn.CanReach(dhd, PathEndMode.ClosestTouch, Danger.Deadly))
-            {
                 return "NoPath".Translate();
-            }
+            
             return true;
         }
     }

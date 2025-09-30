@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
@@ -30,6 +29,7 @@ namespace StargatesMod
         {
             Thing sgThing = CompStargate.GetStargateOnMap(___map);
             CompStargate sgComp = sgThing?.TryGetComp<CompStargate>();
+            
             if (sgComp == null) return;
 
             if (sgComp.StargateIsActive) __result = true;
@@ -44,17 +44,9 @@ namespace StargatesMod
         {
             foreach (Gizmo gizmo in gizmos) yield return gizmo;
 
-            bool containsStargate = false;
-            foreach (Thing thing in __instance.AllThings)
-            {
-                Thing inner = thing.GetInnerIfMinified();
-                if (inner != null)
-                {
-                    if (inner.TryGetComp<CompStargate>() != null) { containsStargate = true; break; }
-                    
-                }
-            }
-            Command_Action command = new Command_Action
+            bool containsStargate = __instance.AllThings.Select(thing => thing.GetInnerIfMinified()).Where(inner => inner != null).Any(inner => inner.TryGetComp<CompStargate>() != null);
+            
+            Command_Action commandCreateSite = new Command_Action
             {
                 icon = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/sgsite_perm"),
                 action = () =>
@@ -66,26 +58,24 @@ namespace StargatesMod
                     foreach (var thing in things)
                     {
                         Thing inner = thing.GetInnerIfMinified();
-                        if (inner != null && inner.def.thingClass == typeof(Building_Stargate))
-                        {
-                            gateDef = inner.def; 
-                            thing.holdingOwner.Remove(thing); 
-                            break; 
-                            
-                        }
+                        if (inner == null || inner.def.thingClass != typeof(Building_Stargate)) continue;
+                        
+                        gateDef = inner.def; 
+                        thing.holdingOwner.Remove(thing); 
+                        break;
                     }
+                    
                     if (gateDef != null && !gateDef.HasComp<CompDialHomeDevice>())
                     {
                         things = __instance.AllThings.ToList();
                         foreach (var thing in things)
                         {
                             Thing inner = thing.GetInnerIfMinified();
-                            if (inner?.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate))
-                            {
-                                dhdDef = inner.def; 
-                                thing.holdingOwner.Remove(thing); 
-                                break;
-                            }
+                            if (inner?.TryGetComp<CompDialHomeDevice>() == null || inner.def.thingClass == typeof(Building_Stargate)) continue;
+                            
+                            dhdDef = inner.def; 
+                            thing.holdingOwner.Remove(thing); 
+                            break;
                         }
                     }
                     WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
@@ -98,10 +88,10 @@ namespace StargatesMod
                 defaultDesc = "SGM.CreateSGSiteDesc".Translate()
             };
             StringBuilder reason = new StringBuilder();
-            if (!containsStargate) command.Disable("SGM.NoGateInCaravan".Translate());
-            else if (__instance.Tile.Tile.Landmark != null) command.Disable("SGM.BlockedByLandmark".Translate());
-            else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
-            yield return command;
+            if (!containsStargate) commandCreateSite.Disable("SGM.NoGateInCaravan".Translate());
+            else if (__instance.Tile.Tile.Landmark != null) commandCreateSite.Disable("SGM.BlockedByLandmark".Translate());
+            else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) commandCreateSite.Disable(reason.ToString());
+            yield return commandCreateSite;
         }
     }
 
@@ -115,7 +105,6 @@ namespace StargatesMod
         static bool Prefix(ref IEnumerable<FloatMenuOption> __result, Thing clickedThing, FloatMenuContext context)
         {
             CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
-            FloatMenuOption option;
             Pawn selPawn = context.FirstSelectedPawn;
             Pawn carriedPawn = (Pawn)context.FirstSelectedPawn.carryTracker.CarriedThing;
             
@@ -123,14 +112,14 @@ namespace StargatesMod
 
             if (sgComp.StargateIsActive)
             {
-                option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("SGM.CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
+                FloatMenuOption optionCarryToStargate = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("SGM.CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
                 {
                     selPawn.carryTracker.TryDropCarriedThing(selPawn.Position, ThingPlaceMode.Near, out var targPawn);
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), targPawn, clickedThing);
                     selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }), selPawn, clickedThing);
 
-                __result = new[] { option };
+                __result = new[] { optionCarryToStargate };
                 return false;
             }
 

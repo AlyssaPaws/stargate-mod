@@ -21,13 +21,11 @@ namespace StargatesMod
             PlanetTile tile = site.Tile;
 
             WorldComp_StargateAddresses sgWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-            if (sgWorldComp != null)
-            {
-                sgWorldComp.CleanupAddresses();
-                if (remove.GetValue(slate)) sgWorldComp.AddressList.Remove(tile);
-                else sgWorldComp.AddressList.Add(tile);
-            }
-            else Log.Error("QuestNode_AddStargateAddresses tried to get WorldComp_StargateAddresses but it was null.");
+            if (sgWorldComp == null) { Log.Error("QuestNode_AddStargateAddresses tried to get WorldComp_StargateAddresses but it was null."); return; }
+            
+            sgWorldComp.CleanupAddresses();
+            if (remove.GetValue(slate)) sgWorldComp.AddressList.Remove(tile);
+            else sgWorldComp.AddressList.Add(tile);
         }
     }
 }

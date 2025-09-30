@@ -4,7 +4,6 @@ using Verse;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Verse.AI;
 
 namespace StargatesMod
 {
@@ -13,18 +12,18 @@ namespace StargatesMod
         CompFacility compFacility;
         public PlanetTile lastDialledAddress;
 
-        public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)this.props;
+        public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)props;
 
-        public CompStargate GetLinkedStargate()
+        public CompStargate GetLinkedStargateComp()
         {
             if (Props.selfDialler) return parent.TryGetComp<CompStargate>(); 
-            if (compFacility.LinkedBuildings.Count == 0)  return null; 
-            return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
+            return compFacility.LinkedBuildings.Count == 0 ? null : compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
         public static Thing GetDHDOnMap(Map map)
         {
-            Thing dhdOnMap = map.listerThings.AllThings.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback();
+            Thing dhdOnMap = map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback() ??
+                             map.listerBuildings.allBuildingsNonColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback();
             
             return dhdOnMap;
         }
@@ -34,10 +33,7 @@ namespace StargatesMod
             get
             {
                 if (Props.selfDialler) return true;
-                if (compFacility.LinkedBuildings.Count == 0)
-                    return false;
-
-                return true;
+                return compFacility.LinkedBuildings.Count != 0;
             }
         }
 
@@ -52,30 +48,30 @@ namespace StargatesMod
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) 
                 yield return gizmo;
 
-            CompStargate stargate = GetLinkedStargate();
-            if (stargate != null)
+            CompStargate compStargate = GetLinkedStargateComp();
+            
+            if (compStargate == null) yield break;
+            
+            Command_Action commandCloseGate = new Command_Action
             {
-                Command_Action command = new Command_Action
+                defaultLabel = "SGM.CloseStargate".Translate(),
+                defaultDesc = "SGM.CloseStargateDesc".Translate(),
+                icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
+                action = delegate
                 {
-                    defaultLabel = "SGM.CloseStargate".Translate(),
-                    defaultDesc = "SGM.CloseStargateDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
-                    action = delegate
-                    {
-                        stargate.CloseStargate(true);
-                    }
-                };
-                if (!stargate.StargateIsActive) { command.Disable("SGM.GateIsNotActive".Translate()); }
-                else if (stargate.IsReceivingGate) { command.Disable("SGM.CannotCloseIncoming".Translate()); }
-                yield return command;
-            }
+                    compStargate.CloseStargate(true);
+                }
+            };
+            if (!compStargate.StargateIsActive) commandCloseGate.Disable("SGM.GateIsNotActive".Translate());
+            else if (compStargate.IsReceivingGate) commandCloseGate.Disable("SGM.CannotCloseIncoming".Translate());
+            yield return commandCloseGate;
         }
     }
     public class CompProperties_DialHomeDevice : CompProperties
     {
         public CompProperties_DialHomeDevice()
         {
-            this.compClass = typeof(CompDialHomeDevice);
+            compClass = typeof(CompDialHomeDevice);
         }
         public bool selfDialler = false;
         public bool requiresPower = false;

@@ -14,8 +14,6 @@ namespace StargatesMod
         public static SoundDef StargateMod_SGOpen;
         public static SoundDef StargateMod_SGFailDial;
 
-        public static SoundDef StargateMod_SGKawooshExplosion;
-
         public static SoundDef StargateMod_SGIdle;
         public static SoundDef StargateMod_SGClose;
 
