@@ -71,31 +71,31 @@ namespace StargatesMod
 
         public void OpenStargate(PlanetTile address)
          {
-            MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
-            if (!connectedMap.HasMap)
+            MapParent connectedMapParent = Find.WorldObjects.MapParentAt(address);
+            if (!connectedMapParent.HasMap)
             {
-                if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMap}");
+                if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMapParent}");
                 
                 LongEventHandler.QueueLongEvent(delegate
                 {
-                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMap.def);
+                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMapParent.Tile, connectedMapParent is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMapParent.def);
                 }, "SGM.GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
                 {
                     if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished generating map");
 
-                    FinishDiallingStargate(address);
+                    FinishDiallingStargate(address, connectedMapParent);
                 }); 
             }
             else
             {
-                FinishDiallingStargate(address);
+                FinishDiallingStargate(address, connectedMapParent);
             }
          }
 
 
-        private void FinishDiallingStargate(PlanetTile address)
+        private void FinishDiallingStargate(PlanetTile address, MapParent connectedMapParent)
         {
-            Thing connectedGate = GetStargateOnMap(address);
+            Thing connectedGate = GetStargateOnMap(connectedMapParent.Map);
 
             if (address > -1 && (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive))
             {
@@ -195,21 +195,6 @@ namespace StargatesMod
             
             return gateOnMap;
         }
-        
-        public static Thing GetStargateOnMap(PlanetTile address, Thing thingToIgnore = null)
-        {
-            Thing gateOnMap = null;
-            Map map = Find.WorldObjects.MapParentAt(address).Map;
-            
-            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback() ??
-                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
-            
-            if (thing != thingToIgnore) 
-                gateOnMap = thing;
-            
-            return gateOnMap;
-         }
-
 
         public static string GetStargateDesignation(PlanetTile address)
         {
@@ -389,7 +374,7 @@ namespace StargatesMod
             if (StargateIsActive)
             {
                 if (_connectedStargate == null && _connectedAddress != -1) 
-                    _connectedStargate = GetStargateOnMap(_connectedAddress);
+                    _connectedStargate = GetStargateOnMap(Find.WorldObjects.MapParentAt(_connectedAddress).Map);
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
 
