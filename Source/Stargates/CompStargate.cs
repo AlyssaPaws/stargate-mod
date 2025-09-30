@@ -187,8 +187,9 @@ namespace StargatesMod
         {
             Thing gateOnMap = null;
             
-            Thing thing = map.listerThings.AllThings.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
-            
+            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback() ??
+                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
+
             if (thing != thingToIgnore) 
                 gateOnMap = thing;
             
@@ -200,7 +201,8 @@ namespace StargatesMod
             Thing gateOnMap = null;
             Map map = Find.WorldObjects.MapParentAt(address).Map;
             
-            Thing thing = map.listerThings.AllThings.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
+            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback() ??
+                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
             
             if (thing != thingToIgnore) 
                 gateOnMap = thing;
