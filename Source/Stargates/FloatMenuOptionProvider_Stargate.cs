@@ -42,11 +42,8 @@ namespace StargatesMod
             tmpStargateEnteringPawns.AddRange(context.ValidSelectedPawns.Where(validSelectedPawn => CanReachStargate(validSelectedPawn, sgComp.parent)));
 
             if (tmpStargateEnteringPawns.NullOrEmpty()) yield break;
-            
-            String enterStargateLabel = "SGM.EnterStargateAction".Translate();
-            if (context.IsMultiselect) enterStargateLabel = "SGM.EnterStargateWithSelectedAction".Translate();
                 
-            yield return new FloatMenuOption(enterStargateLabel, delegate
+            yield return new FloatMenuOption("SGM.EnterStargateAction".Translate(), delegate
             {
                 foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
                 {
