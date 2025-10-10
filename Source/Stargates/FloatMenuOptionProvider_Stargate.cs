@@ -47,7 +47,7 @@ namespace StargatesMod
             {
                 foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
                 {
-                    Pawn carriedPawn = (Pawn)tmpStargateEnteringPawn.carryTracker.CarriedThing; // Optional; ignored if null
+                    Pawn carriedPawn = tmpStargateEnteringPawn.carryTracker.CarriedThing as Pawn;
                         
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), sgComp.parent, carriedPawn);
                     job.playerForced = true;
