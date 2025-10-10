@@ -388,7 +388,7 @@ namespace StargatesMod
                     sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
                     break;
                 case true:
-                    sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+                    sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
                     break;
             }
 
