@@ -427,7 +427,8 @@ namespace StargatesMod
                 action = delegate { HasIris = !HasIris; }
             };
             yield return devAddRemoveIris;
-            devAddRemoveIris = new Command_Action
+            
+            Command_Action devForceClose = new Command_Action
             {
                 defaultLabel = "Force close",
                 defaultDesc = "Force close this gate to hopefully remove strange behaviours (this will not close gate at the other end).",
@@ -437,7 +438,7 @@ namespace StargatesMod
                     Log.Message($"Stargate {parent.ThingID} was force-closed.");
                 }
             };
-            yield return devAddRemoveIris;
+            yield return devForceClose;
         }
 
         private void CleanupGate()
