@@ -7,7 +7,7 @@
 	<SGM.IrisOpen>OPEN</SGM.IrisOpen>
 	<SGM.Present>Present</SGM.Present>
 	<SGM.Missing>Missing</SGM.Missing>
-	<SGM.NotNeeded>(Not Needed)</SGM.NotNeeded>
+	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
 	
 	<!--Notification message text-->
 	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
