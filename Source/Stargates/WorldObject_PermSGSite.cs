@@ -46,7 +46,7 @@ namespace StargatesMod
             
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
-            sb.AppendLine("-");
+            sb.AppendLine("-----");
             sb.AppendLine("SGM.StargateStatus".Translate(gatePresenceLabel, gateLabel));
             sb.AppendLine("SGM.DhdStatus".Translate( dhdPresenceLabel, dhdLabel));
             return sb.ToString().TrimEndNewlines();
