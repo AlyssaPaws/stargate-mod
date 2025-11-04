@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using RimWorld;
@@ -27,7 +25,31 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
-            return "GateAddress".Translate(CompStargate.GetStargateDesignation(Tile));
+            string gatePresenceLabel;
+            string gateLabel = "";
+            if (GateDef == null) gatePresenceLabel = "SGM.Missing".Translate();
+            else
+            {
+                gatePresenceLabel = "SGM.Present".Translate();
+                gateLabel = $"({GateDef.label.CapitalizeFirst()})";
+            }
+
+            string dhdPresenceLabel;
+            string dhdLabel = "";
+            if (DhdDef == null)
+                dhdPresenceLabel = GateDef != ThingDef.Named("StargateMod_Stargate") ?  "SGM.Missing".Translate() +" "+ "SGM.NotNeeded".Translate() : "SGM.Missing".Translate();
+            else
+            {
+                dhdPresenceLabel = "SGM.Present".Translate();
+                dhdLabel = $"({DhdDef.label.CapitalizeFirst()})";
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
+            sb.AppendLine("-----");
+            sb.AppendLine("SGM.StargateStatus".Translate(gatePresenceLabel, gateLabel));
+            sb.AppendLine("SGM.DhdStatus".Translate( dhdPresenceLabel, dhdLabel));
+            return sb.ToString().TrimEndNewlines();
         }
 
         public override void SpawnSetup()
@@ -46,7 +68,7 @@ namespace StargatesMod
         {
             base.PostMapGenerate();
             //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
-            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) 
+            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
                 pawn.Destroy();
 
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
@@ -62,26 +84,27 @@ namespace StargatesMod
                     Thing spGate = GenSpawn.Spawn(GateDef, gatePos, Map);
                     spGate.SetFaction(Faction.OfPlayer);
                 }
+            }
+
+            if (dhdOnMap == null) return;
+            
+            IntVec3 dhdPos = dhdOnMap.Position;
+            dhdOnMap.Destroy();
                 
-            }
-            if (dhdOnMap != null)
-            {
-                IntVec3 dhdPos = dhdOnMap.Position;
-                dhdOnMap.Destroy();
-                if (DhdDef != null)
-                {
-                    Thing spDhd = GenSpawn.Spawn(DhdDef, dhdPos, Map);
-                    spDhd.SetFaction(Faction.OfPlayer);
-                }
-            }
+            if (DhdDef == null) return;
+                
+            Thing spDhd = GenSpawn.Spawn(DhdDef, dhdPos, Map);
+            spDhd.SetFaction(Faction.OfPlayer);
         }
 
         public override void Notify_MyMapAboutToBeRemoved()
         {
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
+            
             DhdDef = dhdOnMap?.def;
             GateDef = gateOnMap?.def;
+            
             if (Prefs.LogVerbose) Log.Message($"StargatesMod: perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
         }
 
@@ -105,8 +128,8 @@ namespace StargatesMod
             {
                 icon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename"),
                 action = () => { Find.WindowStack.Add(new Dialog_RenameSGSite(this)); },
-                defaultLabel = "RenameGateSite".Translate(),
-                defaultDesc = "RenameGateSiteDesc".Translate()
+                defaultLabel = "SGM.RenameGateSite".Translate(),
+                defaultDesc = "SGM.RenameGateSiteDesc".Translate()
             };
         }
 

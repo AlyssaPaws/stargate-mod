@@ -1,42 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-	<Incoming>incoming</Incoming>
-	<Outgoing>outgoing</Outgoing>
-	<IrisClosed>CLOSED</IrisClosed>
-	<IrisOpen>OPEN</IrisOpen>
+	<SGM.Incoming>incoming</SGM.Incoming>
+	<SGM.Outgoing>outgoing</SGM.Outgoing>
+	<SGM.IrisClosed>CLOSED</SGM.IrisClosed>
+	<SGM.IrisOpen>OPEN</SGM.IrisOpen>
+	<SGM.Present>Present</SGM.Present>
+	<SGM.Missing>Missing</SGM.Missing>
+	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
 	
-	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
-	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
-	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
-	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
-	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
-	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
-	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
-	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
-	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
-	<BlockedByLandmark>Not allowed on landmarks.</BlockedByLandmark>
-	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
+	<!--Notification message text-->
+	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
+	<SGM.OnlyOneSGPerMap>Only one of this kind of building can be built per map.</SGM.OnlyOneSGPerMap>
+	<SGM.GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</SGM.GateDialFailed>
+	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
+	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
+
+	<!--InspectString text-->
+	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
+	<SGM.ConnectedToGate>Connected to stargate: {0} ({1})</SGM.ConnectedToGate>
+	<SGM.IrisStatus>Iris is [{0}]</SGM.IrisStatus>
+	<SGM.TimeUntilGateLock>Time until lock: {0}</SGM.TimeUntilGateLock>
+    <SGM.StargateStatus>Stargate: {0} {1}</SGM.StargateStatus>
+    <SGM.DhdStatus>DHD: {0} {1}</SGM.DhdStatus>
+    <SGM.RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM.RespawnGateString>
 	
-	<GateAddress>Stargate address: {0}</GateAddress>
-	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
-	<IrisStatus>Iris is [{0}]</IrisStatus>
-	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
+	<!--Gizmo labels and descriptions-->
+	<SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
+	<SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
+	<SGM.CloseStargate>Close stargate</SGM.CloseStargate>
+	<SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
+	<SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
+	<SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
+	<SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
+	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+    <SGM.CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM.CannotCloseIncoming>
+    <SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
 	
-	<OpenCloseIris>Open/close iris</OpenCloseIris>
-	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
-	<CloseStargate>Close stargate</CloseStargate>
-	<CloseStargateDesc>Close the linked stargate.</CloseStargateDesc>
-	<CreateSGSite>Create new stargate site</CreateSGSite>
-	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
-	<RenameGateSite>Rename stargate site</RenameGateSite>
-	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
+	<!--FloatMenu labels-->
+	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>
+	<SGM.BringThingToGateAction>Bring item or pawn to stargate</SGM.BringThingToGateAction>
+	<SGM.CarryHeldToStargateAction>Carry {0} to stargate</SGM.CarryHeldToStargateAction>
+	<SGM.CarryHeldToStargateAction_Disabled>Cannot carry to stargate: stargate not active</SGM.CarryHeldToStargateAction_Disabled>
+	<SGM.DialGate>Dial {0} ({1})</SGM.DialGate>
+	<SGM.DecodeSGSymbols>Decode symbols</SGM.DecodeSGSymbols>
+	<SGM.CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM.CannotDecodeSGSymbols>
+    
+    <SGM.CannotDialGateIsActive>Cannot dial: stargate is already active</SGM.CannotDialGateIsActive>
+    <SGM.CannotDialNoDestinations>Cannot dial: no available destinations</SGM.CannotDialNoDestinations>
+    <SGM.CannotDialInvalidAddress>Stargate has no registered address. (Try reinstalling this stargate)</SGM.CannotDialInvalidAddress>
+    <SGM.CannotDialIncoming>Cannot dial: incoming wormhole</SGM.CannotDialIncoming>
+    <SGM.CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM.CannotDialAlreadyDialling>
+    <SGM.CannotDialNoPower>Cannot dial: no power</SGM.CannotDialNoPower>
 	
-	<EnterStargateAction>Enter stargate</EnterStargateAction>
-	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
-	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
-	<DialGate>Dial {0} ({1})</DialGate>
-	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
-	
+	<!--Misc-->
+	<SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>
+
+
 </LanguageData>

@@ -1,10 +1,6 @@
-﻿using System;
-using RimWorld;
-using Verse;
+﻿using Verse;
 using Verse.AI;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StargatesMod
 {
@@ -28,7 +24,6 @@ namespace StargatesMod
             this.FailOnDestroyedOrNull(targetStargate);
             this.FailOnDestroyedNullOrForbidden(thingToHaul);
             this.FailOn(() => !job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>().StargateIsActive);
-            if (thing is Pawn) this.FailOnMobile(thingToHaul);
 
             yield return Toils_Goto.GotoCell(thingToHaul, PathEndMode.Touch);
             yield return Toils_Haul.StartCarryThing(thingToHaul);

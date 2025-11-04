@@ -3,7 +3,7 @@ using RimWorld.Planet;
 using Verse;
 using UnityEngine;
 using System.Collections.Generic;
-using Verse.AI;
+using System.Linq;
 
 namespace StargatesMod
 {
@@ -12,26 +12,19 @@ namespace StargatesMod
         CompFacility compFacility;
         public PlanetTile lastDialledAddress;
 
-        public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)this.props;
+        public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)props;
 
-        public CompStargate GetLinkedStargate()
+        public CompStargate GetLinkedStargateComp()
         {
             if (Props.selfDialler) return parent.TryGetComp<CompStargate>(); 
-            if (compFacility.LinkedBuildings.Count == 0)  return null; 
-            return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
+            return compFacility.LinkedBuildings.Count == 0 ? null : compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
         public static Thing GetDHDOnMap(Map map)
         {
-            Thing dhdOnMap = null;
-            foreach (Thing thing in map.listerThings.AllThings)
-            {
-                if (thing.TryGetComp<CompDialHomeDevice>() != null && thing.def.thingClass != typeof(Building_Stargate))
-                {
-                    dhdOnMap = thing;
-                    break;
-                }
-            }
+            Thing dhdOnMap = map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback() ??
+                             map.listerBuildings.allBuildingsNonColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback();
+            
             return dhdOnMap;
         }
 
@@ -40,10 +33,7 @@ namespace StargatesMod
             get
             {
                 if (Props.selfDialler) return true;
-                if (compFacility.LinkedBuildings.Count == 0)
-                    return false;
-
-                return true;
+                return compFacility.LinkedBuildings.Count != 0;
             }
         }
 
@@ -52,98 +42,36 @@ namespace StargatesMod
             base.PostSpawnSetup(respawningAfterLoad);
             compFacility = parent.GetComp<CompFacility>();
         }
-
-        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {
-            if (!IsConnectedToStargate || !selPawn.CanReach(parent.InteractionCell, PathEndMode.Touch, Danger.Deadly))
-            {
-                yield break;
-            }
-            
-            if (Props.requiresPower)
-            {
-                CompPowerTrader compPowerTrader = this.parent.TryGetComp<CompPowerTrader>();
-
-
-                if (compPowerTrader != null && !compPowerTrader.PowerOn)
-                {
-                    yield return new FloatMenuOption("CannotDialNoPower".Translate(), null);
-                    yield break;
-                }
-            }
-            
-            CompStargate stargate = GetLinkedStargate();
-            
-            if (stargate != null)
-            {
-                if (stargate.StargateIsActive)
-                {
-                    yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
-                    yield break;
-                }
-
-                WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-                addressComp.CleanupAddresses();
-                
-                if (addressComp.AddressList.Count < 2)
-                {
-                    yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
-                    yield break;
-                }
-                
-                if (stargate.TicksUntilOpen > -1)
-                {
-                    yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
-                    yield break;
-                }
-
-
-                
-                foreach (PlanetTile pT in addressComp.AddressList)
-                {
-                    if (pT != stargate.GateAddress)
-                    {
-                        MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
-                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), sgMap.Label), () =>
-                        {
-                            lastDialledAddress = pT;
-                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), parent);
-                            selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                        });
-                    }
-                }
-            }
-        }
         
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) 
                 yield return gizmo;
 
-            CompStargate stargate = GetLinkedStargate();
-            if (stargate != null)
+            CompStargate compStargate = GetLinkedStargateComp();
+            
+            if (compStargate == null) yield break;
+            
+            Command_Action commandCloseGate = new Command_Action
             {
-                Command_Action command = new Command_Action
+                defaultLabel = "SGM.CloseStargate".Translate(),
+                defaultDesc = "SGM.CloseStargateDesc".Translate(),
+                icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
+                action = delegate
                 {
-                    defaultLabel = "CloseStargate".Translate(),
-                    defaultDesc = "CloseStargateDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
-                    action = delegate
-                    {
-                        stargate.CloseStargate(true);
-                    }
-                };
-                if (!stargate.StargateIsActive) { command.Disable("GateIsNotActive".Translate()); }
-                else if (stargate.IsReceivingGate) { command.Disable("CannotCloseIncoming".Translate()); }
-                yield return command;
-            }
+                    compStargate.CloseStargate(true);
+                }
+            };
+            if (!compStargate.StargateIsActive) commandCloseGate.Disable("SGM.GateIsNotActive".Translate());
+            else if (compStargate.IsReceivingGate) commandCloseGate.Disable("SGM.CannotCloseIncoming".Translate());
+            yield return commandCloseGate;
         }
     }
     public class CompProperties_DialHomeDevice : CompProperties
     {
         public CompProperties_DialHomeDevice()
         {
-            this.compClass = typeof(CompDialHomeDevice);
+            compClass = typeof(CompDialHomeDevice);
         }
         public bool selfDialler = false;
         public bool requiresPower = false;

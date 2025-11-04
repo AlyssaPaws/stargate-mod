@@ -1,7 +1,4 @@
-﻿using System;
-using RimWorld;
-using RimWorld.Planet;
-using Verse;
+﻿using Verse;
 using Verse.AI;
 using System.Collections.Generic;
 
@@ -18,7 +15,7 @@ namespace StargatesMod
 
             if (DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_GlyphDeciphering").IsFinished)
             {
-                yield return new FloatMenuOption("DecodeSGSymbols".Translate(), () =>
+                yield return new FloatMenuOption("SGM.DecodeSGSymbols".Translate(), () =>
                 {
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), this.parent);
                     selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
@@ -26,7 +23,7 @@ namespace StargatesMod
             }
             else
             {
-                yield return new FloatMenuOption("CannotDecodeSGSymbols".Translate(), null);
+                yield return new FloatMenuOption("SGM.CannotDecodeSGSymbols".Translate(), null);
             }
         }
     }

@@ -49,6 +49,18 @@
 				<li Class="QuestNode_GetSiteTile">
 					<storeAs>siteTile</storeAs>
 					<preferCloserTiles>false</preferCloserTiles>
+					<selectLandmarkChance>0.3</selectLandmarkChance>
+					<allowedLandmarks>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">DryLake</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Wetland</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Valley</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Chasm</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Cliffs</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Hollow</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">TerraformingScar</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">Dunes</li>
+						<li MayRequire="Ludeon.RimWorld.Odyssey">AncientHeatVent</li>
+					</allowedLandmarks>
 				</li>
 
 				<li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
@@ -81,6 +93,15 @@
 				<li Class="StargatesMod.QuestNode_AddStargateAddresses">
 					<address>$site</address>
 					<remove>false</remove>
+				</li>
+				
+				<li Class="QuestNode_Delay">
+					<delayTicks>1</delayTicks>
+					<outSignalComplete>correctSiteName</outSignalComplete>
+				</li>
+				<li Class="StargatesMod.QuestNode_CorrectSiteName">
+					<site>$site</site>
+					<inSignal>correctSiteName</inSignal>
 				</li>
 				
 				<li Class="QuestNode_WorldObjectTimeout">

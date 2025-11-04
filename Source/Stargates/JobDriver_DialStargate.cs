@@ -1,17 +1,13 @@
-﻿using System;
-using RimWorld;
-using Verse;
+﻿using Verse;
 using Verse.AI;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using Verse.Sound;
 
 namespace StargatesMod
 {
     public class JobDriver_DialStargate : JobDriver
     {
         private const TargetIndex targetDHD = TargetIndex.A;
+        private const int openDelayTicks = 200;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -22,15 +18,15 @@ namespace StargatesMod
         {
             CompDialHomeDevice dhdComp = job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
             this.FailOnDestroyedOrNull(targetDHD);
-            this.FailOn(() => dhdComp.GetLinkedStargate().StargateIsActive);
+            this.FailOn(() => dhdComp.GetLinkedStargateComp().StargateIsActive);
 
             yield return Toils_Goto.GotoCell(job.GetTarget(targetDHD).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil
             {
                 initAction = () =>
                 {
-                    CompStargate linkedStargate = dhdComp.GetLinkedStargate();
-                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, 200);
+                    CompStargate linkedStargate = dhdComp.GetLinkedStargateComp();
+                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, openDelayTicks);
                 }
             };
         }

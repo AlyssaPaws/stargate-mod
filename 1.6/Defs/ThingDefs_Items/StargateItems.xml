@@ -4,20 +4,20 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_GlyphScrap</defName>
 		<label>stargate glyph slab</label>
-		<description>A mysterious cracked stone with stargate symbols engraved on it.\n\n"Dial it up!"</description>
+		<description>A mysterious cracked stone with stargate symbols engraved on it.\n\n\n"Dial it up!"</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
 			<texPath>Things/Items/Stargate/glyph_scrap</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
+			<graphicClass>Graphic_StackCount</graphicClass>
 		</graphicData>
-		<stackLimit>1</stackLimit>
+		<stackLimit>3</stackLimit>
 		<tradeNeverStack>true</tradeNeverStack>
 		<useHitPoints>true</useHitPoints>
 		<statBases>
 			<MarketValue>900</MarketValue>
 			<MaxHitPoints>100</MaxHitPoints>
 			<Mass>80</Mass>
-			<Flammability>0</Flammability>
+			<Flammability>0.2</Flammability>
 		</statBases>
 		<techLevel>Medieval</techLevel>
 		<thingCategories>
@@ -36,7 +36,7 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_IrisInstallKit</defName>
 		<label>iris installation kit</label>
-		<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
+		<description>A kit containing all the pre-assembled materials needed to install an iris on a stargate. Once installed, it can be closed to act as a barrier preventing anything from exiting through it, making it perfect for securing against hostile incursions.\n\nAnything trying to exit through a stargate with a closed iris will fail to be reintegrated, destroying the object or person in question. Users should ensure that their stargate's iris is open before attempting to return. \n\n\n"We have in place an impenetrable shield called an iris."</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
 			<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>

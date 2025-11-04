@@ -10,7 +10,7 @@
 	</supportedVersions>
 	<packageId>ccyt.stargatesmod</packageId>
 
-	<description>Adds Stargates! With custom sites that can be discovered and looted, as well as travelled to through them.</description>
+	<description>Adds stargates that can be used to travel large distances, custom sites to discover, and stargate outposts that can be set up by the player to create their own stargate networks.</description>
 
 	<modDependencies>
 		<li>

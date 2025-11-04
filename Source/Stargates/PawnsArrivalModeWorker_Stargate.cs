@@ -1,10 +1,6 @@
-﻿using System;
-using RimWorld;
-using RimWorld.Planet;
+﻿using RimWorld;
 using Verse;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StargatesMod
 {
@@ -19,6 +15,7 @@ namespace StargatesMod
             sgComp.OpenStargateDelayed(-1, 450);
             sgComp.TicksSinceBufferUnloaded = -150;
             sgComp.IsReceivingGate = true;
+            
             foreach (Pawn pawn in pawns)
             {
                 sgComp.AddToReceiveBuffer(pawn);
@@ -30,6 +27,7 @@ namespace StargatesMod
             parms.spawnRotation = Rot4.South;
             Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
             CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
+            
             if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)
             {
                 parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;

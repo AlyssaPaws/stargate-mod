@@ -17,10 +17,9 @@ namespace StargatesMod
         }
 
 		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
-		{
-			if (arrivalSite != null && arrivalSite.Tile != destinationTile) return false; 
-			return true;
-		}
+        {
+            return arrivalSite == null || arrivalSite.Tile == destinationTile;
+        }
 
         public override void Arrived(Caravan caravan)
 		{
@@ -35,7 +34,7 @@ namespace StargatesMod
         public override void ExposeData()
 		{
 			base.ExposeData();
-			Scribe_References.Look(ref this.arrivalSite, "arrivalSite");
+			Scribe_References.Look(ref arrivalSite, "arrivalSite");
 		}
 	}
 }

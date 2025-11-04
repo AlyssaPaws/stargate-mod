@@ -43,7 +43,8 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_Stargate</defName>
 		<label>stargate</label>
-		<description>An ancient device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
+		<description>An ancient, advanced device allowing near-instantaneous travel between it and another stargate through a wormhole. The gate is powered and controlled with a DHD, which allows the user to enter an address. The stargate will then attempt to establish a connection with the other stargate at the given address.\n\nWhen the gate opens an unstable vortex emerges, vaporizing anything in front of the gate. After the unstable vortex subsides the gate will be safe to enter.\n\nA stargate's wormhole only allows for one direction of travel, from the outgoing gate to the incoming gate. Anything entering an incoming wormhole will be irreversibly destroyed, making it imperative to close and re-dial the gate when making a return trip.
+			\n\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -78,9 +79,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
-		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
-This stargate in particular was made using easily available resources, but is quite unstable and unreliable, and also requires an external power source. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
-\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<description>A makeshift version of the stargate. Its design is rudimentary and unstable, only allowing for one use before it experiences catastrophic failure and explodes. It requires an external power source.\nThis stargate's smaller size precludes it from being fitted with an iris. \n\n\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -135,9 +134,7 @@ This stargate in particular was made using easily available resources, but is qu
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
-		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
-This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
-\n"Way smarter than we are."</description>
+		<description>An advanced version of the stargate, built with extensive research into the original design. This model replicates the functionality of the original stargates, while using more commonly available materials.\n\nIt features an integrated interface on its side, allowing a user to dial without needing an external DHD. \n\n\n"Way smarter than we are."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

@@ -1,22 +1,19 @@
-﻿using System;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.QuestGen;
 using Verse;
 using Verse.AI;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StargatesMod
 {
     public class JobDriver_DecodeGlyphs : JobDriver
     {
         private const TargetIndex glyphScrapItem = TargetIndex.A;
-        private const int useDuration = 500;
+        private const int UseDurationTicks = 500;
 
         private void GenerateStargateQuest()
         {
-            //i was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and i just got lucky ;(
+            //i was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and I just got lucky ;(
             Slate slate = new Slate();
             QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("StargateMod_StargateSiteScript");
             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
@@ -32,7 +29,7 @@ namespace StargatesMod
         {
             yield return Toils_Goto.GotoThing(glyphScrapItem, PathEndMode.Touch);
 
-            Toil toil = Toils_General.Wait(useDuration);
+            Toil toil = Toils_General.Wait(UseDurationTicks);
             toil.WithProgressBarToilDelay(glyphScrapItem);
             yield return toil;
             yield return new Toil { initAction = () =>
