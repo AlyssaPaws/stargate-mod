@@ -119,7 +119,7 @@ namespace StargatesMod
              MapParent connectedMapParent = Find.WorldObjects.MapParentAt(address);
              if (!connectedMapParent.HasMap)
              {
-                 if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMap}");
+                 if (Prefs.LogVerbose) Log.Message($"StargatesMod: generating map for {connectedMapParent}");
                 
                 LongEventHandler.QueueLongEvent(delegate
                 {
@@ -296,7 +296,7 @@ namespace StargatesMod
             
             return gateOnMap;
         }
-        
+
         public static string GetStargateDesignation(PlanetTile address)
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
@@ -730,8 +730,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "SelectConnectedGate".Translate(),
-                    defaultDesc = "SelectConnectedGateDesc".Translate(),
+                    defaultLabel = "SGM.SelectConnectedGate".Translate(),
+                    defaultDesc = "SGM.SelectConnectedGateDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
                     action = delegate
                     {
@@ -766,8 +766,8 @@ namespace StargatesMod
                 {
                     Command_Action command = new Command_Action
                     {
-                        defaultLabel = "TransmitGDO".Translate(),
-                        defaultDesc = "TransmitGDODesc".Translate(),
+                        defaultLabel = "SGM>TransmitGDO".Translate(),
+                        defaultDesc = "SGM.TransmitGDODesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateTransmitGDO"),
                         action = delegate
                         {
@@ -775,7 +775,7 @@ namespace StargatesMod
                             connectedSGComp.ChangeIrisState();
                         }
                     };
-                    if (!connectedSGComp.IrisIsActivated) command.Disable("CannotGDO".Translate());
+                    if (!connectedSGComp.IrisIsActivated) command.Disable("SGM.CannotGDO".Translate());
                     yield return command;
                 }
             }
@@ -785,8 +785,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "WakeHibernation".Translate(),
-                    defaultDesc = "WakeHibernationDesc".Translate(),
+                    defaultLabel = "SGM.WakeHibernation".Translate(),
+                    defaultDesc = "SGM.WakeHibernationDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateUnHibernate"),
                     action = InitGate
                 };
