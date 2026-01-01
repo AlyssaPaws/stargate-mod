@@ -17,6 +17,7 @@
 	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
     <SGM.StargateEnterBlockedSize>Vehicle entry blocked: Can not fit through the gate.</SGM.StargateEnterBlockedSize>
     <SGM.StargateEnterBlockedType>Vehicle entry blocked: Vehicle type is not allowed.</SGM.StargateEnterBlockedType>
+	<SGM.NoVehicleDetected>No vehicle detected.</SGM.NoVehicleDetected>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
@@ -35,9 +36,11 @@
 	<SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
 	<SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
 	<SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
-	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognisable name.</SGM.RenameGateSiteDesc>
     <SGM.CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM.CannotCloseIncoming>
     <SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
+	<SGM.InsertVehicle>Insert Vehicle</SGM.InsertVehicle>
+	<SGM.InsertVehicleDesc>Insert A vehicle into the stargate. Vehicle must be directly in front of the gate.</SGM.InsertVehicleDesc>
 	
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>

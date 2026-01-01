@@ -247,19 +247,25 @@ namespace StargatesMod
             _recvBuffer.Add(thing);
         }
 
-        private void WormholeContentDisposal(bool isRecvBuffer)
+        private void WormholeContentsDisposal(bool isRecvBuffer)
         {
+            DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 
+                99999f, 999f);
+            
             Thing thingToDestroy = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
             if (thingToDestroy is Pawn pawn)
             {
                 // Remove death refusal hediff (if present) before killing pawn, to avoid error.
-                foreach (var hediff in pawn.health.hediffSet.hediffs.ToList().Where(hediff => hediff.def.defName == "DeathRefusal"))
-                {
+                var hediff = pawn.health.hediffSet.hediffs.ToList().Where(h => h.def.defName == "DeathRefusal").FirstOrFallback();
+                if (hediff != null)
                     pawn.health.RemoveHediff(hediff);
-                }
+                
             }
-                    
-            if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill();
+
+            if (ModsConfig.IsActive("smashphil.vehicleframework"))
+                VehicleContentsDisposal(thingToDestroy);
+            
+            if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
             
             if (!isRecvBuffer) _sendBuffer.Remove(thingToDestroy);
             else
@@ -269,36 +275,29 @@ namespace StargatesMod
             }
         }
         
-        //TODO integrate with WormholeContentDisposal
-        private bool VehicleVortexDestruction(Thing thing)
+        private void VehicleContentsDisposal(Thing thing)
         {
             DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 
                 99999f, 999f);
-            
-            if (thing as Pawn is VehiclePawn)
-            {
-                VehiclePawn vP = thing as VehiclePawn;
-                if (vP?.AllPawnsAboard != null)
-                {
-                    foreach (Pawn p in vP.AllPawnsAboard.ToList())
-                    {
-                        vP.RemovePawn(p);
-                        p.Kill(disintDeathInfo);
-                        p.Corpse.Kill();
-                    }
-                }
-                if (!vP.DestroyedOrNull()) vP?.Destroy();
 
-                return true;
+            if (!(thing as Pawn is VehiclePawn)) return;
+
+            VehiclePawn vP = thing as VehiclePawn;
+            if (vP?.AllPawnsAboard == null) return;
+            
+            foreach (Pawn p in vP.AllPawnsAboard.ToList())
+            {
+                vP.RemovePawn(p);
+                p.Kill(disintDeathInfo);
+                p.Corpse.Kill();
             }
-            return false;
         }
 
         private bool ExpelVehicle(Thing thing)
         {
             if (thing as Pawn is VehiclePawn)
             {
-                GenSpawn.Spawn(thing, parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map);
+                GenSpawn.Spawn(thing, parent.InteractionCell + new IntVec3(0, 0, -2), parent.Map); // TODO make work with rotation
                 return true;
             }
 
@@ -306,34 +305,34 @@ namespace StargatesMod
             
         }
 
-        private void SendVehicle(Thing thing)
+        private void SendVehicle()
         {
-            if (thing as Pawn is VehiclePawn)
+            VehiclePawn vehicle = parent.Map.thingGrid.ThingsAt(parent.InteractionCell + new IntVec3(0, 0, -1)).OfType<VehiclePawn>().FirstOrDefault(); //TODO make work with rotation
+
+            if (vehicle == null)
             {
-                VehiclePawn vP = thing as VehiclePawn;
-                                
-                /*Check if vehicle is of tge land variety and of reasonable size*/
-                bool vehTypeValid = vP?.VehicleDef.type == VehicleType.Land;
-                bool vehSizeValid = (vP?.VehicleDef.size.x <= 3 && vP.VehicleDef.size.z <= 5);
-                if (vehTypeValid && vehSizeValid) 
+                Messages.Message("SGM.NoVehicleDetected".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            
+            /*Check if vehicle is of tge land variety and of reasonable size*/
+            bool vehTypeValid = vehicle.VehicleDef.type == VehicleType.Land;
+            bool vehSizeValid = vehicle.VehicleDef.size.x <= 3 && vehicle.VehicleDef.size.z <= 5;
+            if (vehTypeValid && vehSizeValid) 
+            {
+                if (vehicle.Spawned) vehicle.DeSpawn();
+                AddToSendBuffer(vehicle);
+                PlayTeleportSound();
+            }
+            else
+            {
+                if (!vehTypeValid)
                 {
-                    if (thing.Spawned) thing.DeSpawn();
-                    AddToSendBuffer(thing);
-                    PlayTeleportSound();
+                    Messages.Message("SGM.StargateEnterBlockedType".Translate(), MessageTypeDefOf.RejectInput);
+                    return;
                 }
-                else
-                {
-                    if (!vehTypeValid)
-                    {
-                        string rejectMsgType= "StargateEnterBlockedType".Translate();
-                        Messages.Message(rejectMsgType, MessageTypeDefOf.RejectInput);
-                    }
-                    if (!vehSizeValid && vehTypeValid)
-                    {
-                        string rejectMsgSize = "StargateEnterBlockedSize".Translate();
-                        Messages.Message(rejectMsgSize, MessageTypeDefOf.RejectInput);
-                    }
-                }
+
+                Messages.Message("SGM.StargateEnterBlockedSize".Translate(), MessageTypeDefOf.RejectInput);
             }
         }
         
@@ -392,7 +391,7 @@ namespace StargatesMod
                     sgComp.AddToReceiveBuffer(_sendBuffer[0]);
                     _sendBuffer.Remove(_sendBuffer[0]);
                 }
-                else WormholeContentDisposal(false);
+                else WormholeContentsDisposal(false);
             }
 
             if (_recvBuffer.Any() && TicksSinceBufferUnloaded > Rand.Range(10, 80))
@@ -404,16 +403,14 @@ namespace StargatesMod
                     if (ModsConfig.IsActive("smashphil.vehicleframework"))
                     {
                         if (!ExpelVehicle(_recvBuffer[0]))
-                        {
                             GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
-                        }
                     }
                     else GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
 
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
-                else WormholeContentDisposal(true);
+                else WormholeContentsDisposal(true);
 
                 if (_connectedAddress == -1 && !_recvBuffer.Any())
                     CloseStargate(false);
@@ -459,12 +456,12 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(GateAddress)));
+            sb.AppendLine("SGM.GateAddress".Translate(GetStargateDesignation(GateAddress)));
             if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             if (StargateIsActive)
-                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
-                    (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
+                sb.AppendLine("SGM.ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
+                    (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
 
             if (HasIris) sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
             if (TicksUntilOpen > 0) sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
@@ -493,6 +490,18 @@ namespace StargatesMod
                 yield return irisControl;
             }
 
+            if (ModsConfig.IsActive("smashphil.vehicleframework") && StargateIsActive)
+            {
+                Command_Action insertVehicle = new Command_Action
+                {
+                    defaultLabel = "SGM.InsertVehicle".Translate(),
+                    defaultDesc = "SGM.InsertVehicleDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Gizmos/CancelLoadVehicle"),
+                    action = SendVehicle
+                };
+                yield return insertVehicle;
+            }
+            
             if (!Prefs.DevMode) yield break;
             
             Command_Action devAddRemoveIris = new Command_Action

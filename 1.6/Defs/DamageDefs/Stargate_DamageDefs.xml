@@ -24,4 +24,10 @@
 		<combatLogRules>Damage_Flame</combatLogRules>
 	</DamageDef>
 
+	<DamageDef>
+		<defName>StargateMod_DisintegrationDeath</defName>
+		<label>wormhole</label>
+		<deathMessage>{0} has been killed in a stargate wormhole.</deathMessage>
+	</DamageDef>
+
 </Defs>
